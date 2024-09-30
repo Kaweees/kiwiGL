@@ -20,3 +20,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/target/release/"
   OUTPUT_NAME ${PROJECT_NAME}
 )
+
+# Find SDL2 package
+find_package(SDL2 REQUIRED)
+
+# Include SDL2 headers
+include_directories(${SDL2_INCLUDE_DIRS})
+
+# Link SDL2 libraries (add this to your target)
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
