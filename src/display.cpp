@@ -39,6 +39,20 @@ Display::~Display() {
   SDL_Quit();
 }
 
+void Display::processInput() {
+  SDL_Event event;
+  switch (event.type) {
+    default:
+      break;
+  }
+}
+
+void Display::clear() {
+  // Clear the renderer
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderClear(renderer);
+}
+
 bool Display::shouldClose() const { return SDL_QuitRequested(); }
 
 }  // namespace graphics

@@ -17,7 +17,9 @@ int main(int argc, char **argv) {
   // Main emulation loop
   // Loop until window close button or ESC key is pressed
   while (!display.shouldClose()) {
-    // chip8.cycle();
+    display.processInput();
+    display.update();
+    display.render();
   }
   return EXIT_SUCCESS;
 }
