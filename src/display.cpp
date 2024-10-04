@@ -2,22 +2,29 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/constants.hpp"
-
 namespace graphics {
 Display::Display() {
-  // Initialize the frame buffer
-  frameBuffer = std::make_unique<FrameBuffer>(WIDTH, HEIGHT);
-
-  // Initialize the SDL window
+  // Initialize SDL
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     fprintf(
         stderr, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
   }
+
+  // Query SDL for the display mode
+  SDL_DisplayMode displayMode;
+  if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
+    fprintf(stderr, "SDL_GetCurrentDisplayMode failed: %s\n", SDL_GetError());
+    exit(EXIT_FAILURE);
+  }
+
+  // Initialize the frame buffer
+  frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
+
+  // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
       SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(), frameBuffer->getHeight(),
-      SDL_WINDOW_SHOWN);
+      SDL_WINDOW_BORDERLESS);
   if (window == nullptr) {
     fprintf(
         stderr, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -41,6 +48,9 @@ Display::Display() {
         SDL_GetError());
     exit(EXIT_FAILURE);
   }
+
+  // Set the blend mode
+  SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 }
 
 Display::~Display() {
