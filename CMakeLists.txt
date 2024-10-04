@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(cpp-template CXX)
+project(graphics CXX)
 set(CMAKE_CXX_STANDARD 14) # Use C++14 standard for more features
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror") # Set the compiler flags to include all warnings and treat them as errors
 

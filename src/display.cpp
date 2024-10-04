@@ -35,8 +35,28 @@ Display::~Display() {
   // Free the renderer
   SDL_DestroyRenderer(renderer);
 
+  // Free the texture
+  SDL_DestroyTexture(texture);
+  texture = nullptr;
+
   // Quit SDL subsystems
   SDL_Quit();
+}
+
+void Display::update() {
+  // Update the renderer
+}
+
+void Display::render() {
+  // Update the texture with the color buffer data
+  // SDL_UpdateTexture(texture, nullptr, colorBuffer->getData().data(),
+  //     colorBuffer->getWidth() * sizeof(uint32_t));
+
+  // Copy the texture to the renderer
+  SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+
+  // Present the renderer
+  SDL_RenderPresent(renderer);
 }
 
 void Display::processInput() {
