@@ -9,6 +9,9 @@ class Color {
   // Constructor to initialize memory
   Color();
 
+  // Constructor to initialize memory with a 32-bit unsigned integer
+  Color(uint32_t rgba);
+
   // Constructor to initialize memory with color values
   Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
 
