@@ -23,6 +23,9 @@ class Color {
   uint8_t blue;
   uint8_t alpha;
 
+  // Linearly interpolate between two colors
+  Color lerp(const Color& other, float t) const;
+
   // Cast the color as a 32-bit unsigned integer
   explicit operator uint32_t() const {
     return (alpha << 24) | (blue << 16) | (green << 8) | red;

@@ -1,7 +1,7 @@
-# cpp-template
+# fuzzy-robot
 
-A template for creating C++ projects.
+A three-dimensional graphics library from scratch written in C++13 and accelerated with CUDA.
 
 ```sh
-clear && cmake CMakeLists.txt && make && ./target/release/cpp-template
+clear && cmake CMakeLists.txt && make && ./target/release/graphics
 ```
