@@ -43,5 +43,21 @@ class Display {
 
   // Method to check if the display should close
   bool shouldClose() const;
+
+  // Method to draw a pixel on the display
+  void drawPixel(int x, int y, const Color &color);
+
+  // // Method to draw a line on the display
+  void drawLine(int x1, int y1, int x2, int y2, const Color &color);
+
+  // Method to draw a grid on the display
+  void drawGrid(int width, int height, int cellSize, const Color &color);
+
+  // Method to draw a rectangle on the display
+  void drawRectangle(int x, int y, int width, int height, const Color &color);
+
+  // Method to draw a filled rectangle on the display
+  void drawFilledRectangle(
+      int x, int y, int width, int height, const Color &color);
 };
 }  // namespace graphics
