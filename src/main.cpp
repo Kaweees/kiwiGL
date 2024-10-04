@@ -10,12 +10,11 @@
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(int argc, char **argv) {
-  // Initialization of Chip8 and loading of program
-
+  // Initialization of display
   graphics::Display display;
 
-  // Main emulation loop
-  // Loop until window close button or ESC key is pressed
+  // Main graphics loop
+  // Loop until window close button is pressed
   while (!display.shouldClose()) {
     display.processInput();
     display.update();

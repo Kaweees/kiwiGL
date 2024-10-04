@@ -6,7 +6,7 @@
 
 #include <memory>
 
-// #include "../include/frame_buffer.hpp"
+#include "../include/frame_buffer.hpp"
 
 namespace graphics {
 class Display {
@@ -20,7 +20,7 @@ class Display {
   // std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> surface;
   // std::unique_ptr<SDL_Event> event;
   // std::unique_ptr<SDL_Renderer> renderer;
-  // std::unique_ptr<ColorBuffer> colorBuffer;
+  std::unique_ptr<FrameBuffer> frameBuffer;
 
   public:
   // Constructor to initialize memory
