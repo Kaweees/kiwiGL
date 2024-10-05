@@ -2,7 +2,6 @@
 #include <stdio.h>
 
 #include "../include/display.hpp"
-#include "../include/vector.hpp"
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1

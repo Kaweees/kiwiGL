@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "../include/vector.hpp"
+
 namespace graphics {
 Display::Display() {
   // Initialize SDL
@@ -20,6 +22,18 @@ Display::Display() {
 
   // Initialize the frame buffer
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
+
+  // Initialize the vertices
+  vertices = std::vector<Vector3D>{
+      Vector3D(0, 0, 0),
+      Vector3D(0, 0, 1),
+      Vector3D(0, 1, 0),
+      Vector3D(0, 1, 1),
+      Vector3D(1, 0, 0),
+      Vector3D(1, 0, 1),
+      Vector3D(1, 1, 0),
+      Vector3D(1, 1, 1),
+  };
 
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
@@ -80,9 +94,9 @@ void Display::render() {
   // Clear the renderer
   clear();
 
-  drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0, 255));
+  frameBuffer->drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0, 255));
 
-  drawGrid(frameBuffer->getWidth(), frameBuffer->getHeight(), 32,
+  frameBuffer->drawGrid(frameBuffer->getWidth(), frameBuffer->getHeight(), 32,
       Color(255, 0, 0, 255));
 
   // Update the texture with the frame buffer data
@@ -114,71 +128,4 @@ void Display::clear() {
 }
 
 bool Display::shouldClose() const { return SDL_QuitRequested(); }
-
-void Display::drawPixel(int x, int y, const Color &color) {
-  frameBuffer->setPixel(x, y, color);
-}
-
-void Display::drawLine(int x1, int y1, int x2, int y2, const Color &color) {
-  // Bresenham's line algorithm
-  int dx = abs(x2 - x1);
-  int dy = abs(y2 - y1);
-  int sx = (x1 < x2) ? 1 : -1;
-  int sy = (y1 < y2) ? 1 : -1;
-  int err = dx - dy;
-
-  while (true) {
-    frameBuffer->setPixel(x1, y1, color);
-
-    if (x1 == x2 && y1 == y2) {
-      break;
-    }
-
-    int e2 = 2 * err;
-    if (e2 > -dy) {
-      err -= dy;
-      x1 += sx;
-    }
-
-    if (e2 < dx) {
-      err += dx;
-      y1 += sy;
-    }
-  }
-}
-
-void Display::drawGrid(
-    int width, int height, int cellSize, const Color &color) {
-  // Draw the vertical lines
-  for (int x = 0; x <= width; x += cellSize) {
-    drawLine(x, 0, x, height, color);
-  }
-
-  // Draw the horizontal lines
-  for (int y = 0; y <= height; y += cellSize) {
-    drawLine(0, y, width, y, color);
-  }
-}
-
-void Display::drawRectangle(
-    int x, int y, int width, int height, const Color &color) {
-  // Draw the top line
-  drawLine(x, y, x + width, y, color);
-
-  // Draw the right line
-  drawLine(x + width, y, x + width, y + height, color);
-
-  // Draw the bottom line
-  drawLine(x + width, y + height, x, y + height, color);
-
-  // Draw the left line
-  drawLine(x, y + height, x, y, color);
-}
-
-void Display::drawFilledRectangle(
-    int x, int y, int width, int height, const Color &color) {
-  for (int i = 0; i < height; i++) {
-    drawLine(x, y + i, x + width, y + i, color);
-  }
-}
 }  // namespace graphics

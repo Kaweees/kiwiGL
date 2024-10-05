@@ -18,11 +18,27 @@ class FrameBuffer {
   FrameBuffer(int width, int height);
   ~FrameBuffer() = default;
 
-  void setPixel(int x, int y, const Color& color);
-  void clear(const Color& color);
+  void clear(const Color &color);
 
   int getWidth() const { return width; }
   int getHeight() const { return height; }
-  const std::vector<uint32_t>& getData() const { return buffer; }
+
+  // Method to draw a pixel on the display
+  void drawPixel(int x, int y, const Color &color);
+
+  // // Method to draw a line on the display
+  void drawLine(int x1, int y1, int x2, int y2, const Color &color);
+
+  // Method to draw a grid on the display
+  void drawGrid(int width, int height, int cellSize, const Color &color);
+
+  // Method to draw a rectangle on the display
+  void drawRectangle(int x, int y, int width, int height, const Color &color);
+
+  // Method to draw a filled rectangle on the display
+  void drawFilledRectangle(
+      int x, int y, int width, int height, const Color &color);
+
+  const std::vector<uint32_t> &getData() const { return buffer; }
 };
 }  // namespace graphics
