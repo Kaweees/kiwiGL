@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-#include "../include/vector.hpp"
+#include "../include/vector3d.hpp"
 
 namespace graphics {
 Display::Display() {

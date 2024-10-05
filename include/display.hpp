@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "../include/frame_buffer.hpp"
-#include "../include/vector.hpp"
+#include "../include/vector3d.hpp"
 
 namespace graphics {
 class Display {
@@ -15,12 +15,9 @@ class Display {
   // Constants for display
   SDL_Window *window;
   SDL_Texture *texture;
+  SDL_Surface *surface;
+  SDL_Event *event;
   SDL_Renderer *renderer;
-  // std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window;
-  // std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> texture;
-  // std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> surface;
-  // std::unique_ptr<SDL_Event> event;
-  // std::unique_ptr<SDL_Renderer> renderer;
   std::unique_ptr<FrameBuffer> frameBuffer;
   std::vector<Vector3D> vertices;
 

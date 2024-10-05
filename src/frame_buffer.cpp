@@ -7,7 +7,7 @@ FrameBuffer::FrameBuffer(int width, int height)
 
 void FrameBuffer::drawPixel(int x, int y, const Color &color) {
   if (x >= 0 && x < width && y >= 0 && y < height) {
-    buffer[y * width + x] = static_cast<uint32_t>(color);
+    buffer[(y * width) + x] = static_cast<uint32_t>(color);
   }
 }
 
@@ -70,7 +70,9 @@ void FrameBuffer::drawRectangle(
 void FrameBuffer::drawFilledRectangle(
     int x, int y, int width, int height, const Color &color) {
   for (int i = 0; i < height; i++) {
-    drawLine(x, y + i, x + width, y + i, color);
+    for (int j = 0; j < width; j++) {
+      drawPixel(x + j, y + i, color);
+    }
   }
 }
 
