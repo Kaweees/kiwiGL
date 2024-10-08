@@ -3,8 +3,9 @@
 #include <cmath>
 #include <iostream>
 
-using std::sqrt;
+#include "../include/vector2d.hpp"
 
+using std::sqrt;
 namespace graphics {
 // Represents a three-dimensional vector
 class Vector3D {
@@ -59,6 +60,10 @@ class Vector3D {
 
   // Get the length of the vector
   double length() const { return sqrt(magnitude()); }
+
+  Vector2D project() const {
+    return Vector2D(x * 128 / z, y * 128 / z);
+  }
 };
 
 // Type alias for Point3D

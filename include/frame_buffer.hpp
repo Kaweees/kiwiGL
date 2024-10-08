@@ -30,7 +30,7 @@ class FrameBuffer {
   void drawLine(int x1, int y1, int x2, int y2, const Color &color);
 
   // Method to draw a grid on the display
-  void drawGrid(int width, int height, int cellSize, const Color &color);
+  void drawGrid(const Color &color);
 
   // Method to draw a rectangle on the display
   void drawRectangle(int x, int y, int width, int height, const Color &color);

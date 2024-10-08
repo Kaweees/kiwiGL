@@ -7,7 +7,7 @@ FrameBuffer::FrameBuffer(int width, int height)
 
 void FrameBuffer::drawPixel(int x, int y, const Color &color) {
   if (x >= 0 && x < width && y >= 0 && y < height) {
-    buffer[(y * width) + x] = static_cast<uint32_t>(color);
+    buffer[(width * y) + x] = static_cast<uint32_t>(color);
   }
 }
 
@@ -39,16 +39,11 @@ void FrameBuffer::drawLine(int x1, int y1, int x2, int y2, const Color &color) {
   }
 }
 
-void FrameBuffer::drawGrid(
-    int width, int height, int cellSize, const Color &color) {
-  // Draw the vertical lines
-  for (int x = 0; x <= width; x += cellSize) {
-    drawLine(x, 0, x, height, color);
-  }
-
-  // Draw the horizontal lines
-  for (int y = 0; y <= height; y += cellSize) {
-    drawLine(0, y, width, y, color);
+void FrameBuffer::drawGrid(const Color &color) {
+  for (int y = 0; y < height; y += 10) {
+    for (int x = 0; x < width; x += 10) {
+      drawPixel(x, y, color);
+    }
   }
 }
 
@@ -69,8 +64,8 @@ void FrameBuffer::drawRectangle(
 
 void FrameBuffer::drawFilledRectangle(
     int x, int y, int width, int height, const Color &color) {
-  for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width; j++) {
+  for (int i = 0; i < width; i++) {
+    for (int j = 0; j < height; j++) {
       drawPixel(x + j, y + i, color);
     }
   }

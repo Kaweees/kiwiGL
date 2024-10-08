@@ -24,16 +24,13 @@ Display::Display() {
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
   // Initialize the vertices
-  vertices = std::vector<Vector3D>{
-      Vector3D(0, 0, 0),
-      Vector3D(0, 0, 1),
-      Vector3D(0, 1, 0),
-      Vector3D(0, 1, 1),
-      Vector3D(1, 0, 0),
-      Vector3D(1, 0, 1),
-      Vector3D(1, 1, 0),
-      Vector3D(1, 1, 1),
-  };
+  for (float x = -1; x <= 1; x += 0.25) {
+    for (float y = -1; y <= 1; y += 0.25) {
+      for (float z = -1; z <= 1; z += 0.25) {
+        vertices.push_back(Vector3D(x, y, z));
+      }
+    }
+  }
 
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
@@ -86,9 +83,7 @@ Display::~Display() {
   SDL_Quit();
 }
 
-void Display::update() {
-  // Update the renderer
-}
+void Display::update() {}
 
 void Display::render() {
   // Clear the renderer
@@ -96,8 +91,18 @@ void Display::render() {
 
   frameBuffer->drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0, 255));
 
-  frameBuffer->drawGrid(frameBuffer->getWidth(), frameBuffer->getHeight(), 32,
-      Color(255, 0, 0, 255));
+  frameBuffer->drawGrid(Color(0xFF444444));
+
+  for (auto &vertex : vertices) {
+    Vector2D projectedPoint = vertex.project();
+    // frameBuffer->drawPixel(projectedPoint.x + (frameBuffer->getWidth() / 2),
+    //     projectedPoint.y + (frameBuffer->getHeight() / 2),
+    //     Color(0xFFFFFF00));
+    frameBuffer->drawFilledRectangle(
+        projectedPoint.x + (frameBuffer->getWidth() / 2),
+        projectedPoint.y + (frameBuffer->getHeight() / 2), 4, 4,
+        Color(0xFFFFFF00));
+  }
 
   // Update the texture with the frame buffer data
   SDL_UpdateTexture(texture, nullptr, frameBuffer->getData().data(),
@@ -107,7 +112,7 @@ void Display::render() {
   SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 
   // Clear the frame buffer
-  frameBuffer->clear(Color(0, 255, 255, 255));
+  frameBuffer->clear(Color(0, 0, 0, 0));
 
   // Present the renderer
   SDL_RenderPresent(renderer);

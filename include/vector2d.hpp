@@ -45,3 +45,4 @@ class Vector2D {
 inline std::ostream& operator<<(std::ostream& out, const Vector2D& vec) {
   return out << vec.x << ' ' << vec.y;
 }
+}  // namespace graphics
