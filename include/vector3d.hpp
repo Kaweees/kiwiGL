@@ -61,9 +61,7 @@ class Vector3D {
   // Get the length of the vector
   double length() const { return sqrt(magnitude()); }
 
-  Vector2D project() const {
-    return Vector2D(x * 128 / z, y * 128 / z);
-  }
+  Vector2D project() const { return Vector2D(x * 128 / z, y * 128 / z); }
 };
 
 // Type alias for Point3D
