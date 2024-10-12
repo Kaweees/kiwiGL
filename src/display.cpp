@@ -24,6 +24,8 @@ Display::Display() {
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
   // Initialize the vertices
+  // Start loading my array of vectors
+  // From -1 to 1 (in this 9x9x9 cube)
   for (float x = -1; x <= 1; x += 0.25) {
     for (float y = -1; y <= 1; y += 0.25) {
       for (float z = -1; z <= 1; z += 0.25) {
@@ -83,7 +85,14 @@ Display::~Display() {
   SDL_Quit();
 }
 
-void Display::update() {}
+void Display::update() {
+  // Rotate the vertices
+  for (auto &vertex : vertices) {
+    vertex.rotateX(0.01);
+    vertex.rotateY(0.01);
+    vertex.rotateZ(0.01);
+  }
+}
 
 void Display::render() {
   // Clear the renderer
@@ -111,9 +120,6 @@ void Display::render() {
   // Copy the texture to the renderer
   SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 
-  // Clear the frame buffer
-  frameBuffer->clear(Color(0, 0, 0, 0));
-
   // Present the renderer
   SDL_RenderPresent(renderer);
 }
@@ -130,6 +136,9 @@ void Display::clear() {
   // Clear the renderer
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
+
+  // Clear the frame buffer
+  frameBuffer->clear(Color(0, 0, 0, 0));
 }
 
 bool Display::shouldClose() const { return SDL_QuitRequested(); }
