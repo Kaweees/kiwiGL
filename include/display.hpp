@@ -18,6 +18,8 @@ class Display {
   SDL_Surface *surface;
   SDL_Event *event;
   SDL_Renderer *renderer;
+  Vector3D camera;
+  Vector3D rotation;
   std::unique_ptr<FrameBuffer> frameBuffer;
   std::vector<Vector3D> vertices;
 

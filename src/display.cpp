@@ -6,6 +6,9 @@
 
 namespace graphics {
 Display::Display() {
+  // Initialize the camera
+  camera = Vector3D(0, 0, -5);
+
   // Initialize SDL
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     fprintf(
@@ -91,6 +94,7 @@ void Display::update() {
     vertex.rotateX(0.01);
     vertex.rotateY(0.01);
     vertex.rotateZ(0.01);
+    vertex.z -= camera.z;
   }
 }
 
