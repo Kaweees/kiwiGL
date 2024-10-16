@@ -6,7 +6,7 @@ FrameBuffer::FrameBuffer(int width, int height)
     : width(width), height(height), buffer(width * height, 0) {}
 
 void FrameBuffer::drawPixel(int x, int y, const Color &color) {
-  if (x >= 0 && x < width && y >= 0 && y < height) {
+  if (0 <= x && x < width && 0 <= y && y < height) {
     buffer[(width * y) + x] = static_cast<uint32_t>(color);
   }
 }
