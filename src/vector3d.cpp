@@ -1,9 +1,11 @@
 #include "../include/vector3d.hpp"
 
 #include <cmath>
+
+#include "../include/constants.hpp"
 namespace graphics {
 Vector2D Vector3D::project() const {
-  return Vector2D(x * 128 / z, y * 128 / z);
+  return Vector2D(x * FOV / z, y * FOV / z);
 }
 
 void Vector3D::rotateX(double theta) {

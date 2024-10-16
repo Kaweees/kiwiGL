@@ -2,12 +2,15 @@
 
 #include <SDL2/SDL.h>
 
+#include "../include/constants.hpp"
 #include "../include/vector3d.hpp"
 
 namespace graphics {
 Display::Display() {
   // Initialize the camera
   camera = Vector3D(0, 0, -5);
+  rotation = Vector3D(0, 0, 0);
+  prevTime = SDL_GetTicks();
 
   // Initialize SDL
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -108,12 +111,9 @@ void Display::render() {
 
   for (auto &vertex : vertices) {
     Vector2D projectedPoint = vertex.project();
-    // frameBuffer->drawPixel(projectedPoint.x + (frameBuffer->getWidth() / 2),
-    //     projectedPoint.y + (frameBuffer->getHeight() / 2),
-    //     Color(0xFFFFFF00));
     frameBuffer->drawFilledRectangle(
-        projectedPoint.x + (frameBuffer->getWidth() / 2),
-        projectedPoint.y + (frameBuffer->getHeight() / 2), 4, 4,
+        projectedPoint.x * (frameBuffer->getWidth() / 2),
+        projectedPoint.y * (frameBuffer->getHeight() / 2), 4, 4,
         Color(0xFFFFFF00));
   }
 
