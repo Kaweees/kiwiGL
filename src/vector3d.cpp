@@ -4,9 +4,7 @@
 
 #include "../include/constants.hpp"
 namespace graphics {
-Vector2D Vector3D::project() const {
-  return Vector2D(x * FOV / z, y * FOV / z);
-}
+Vector2D Vector3D::project() const { return Vector2D(x * FOV, y * FOV); }
 
 void Vector3D::rotateX(double theta) {
   double y_new = y * cos(theta) - z * sin(theta);

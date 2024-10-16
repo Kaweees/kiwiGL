@@ -10,6 +10,7 @@ Display::Display() {
   // Initialize the camera
   camera = Vector3D(0, 0, -5);
   rotation = Vector3D(0, 0, 0);
+
   prevTime = SDL_GetTicks();
 
   // Initialize SDL
@@ -92,12 +93,17 @@ Display::~Display() {
 }
 
 void Display::update() {
-  // Rotate the vertices
-  for (auto &vertex : vertices) {
-    vertex.rotateX(0.01);
-    vertex.rotateY(0.01);
-    vertex.rotateZ(0.01);
-    vertex.z -= camera.z;
+  int currentTime = SDL_GetTicks();
+  int deltaTime = currentTime - prevTime;
+  prevTime = currentTime;
+
+  if (deltaTime < FRAME_TIME) {
+    SDL_Delay(FRAME_TIME - deltaTime);
+  } else {
+    // Rotate the vertices
+    for (auto &vertex : vertices) {
+    }
+    deltaTime = 0;
   }
 }
 
@@ -105,15 +111,16 @@ void Display::render() {
   // Clear the renderer
   clear();
 
-  frameBuffer->drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0, 255));
+  // frameBuffer->drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0, 255));
 
-  frameBuffer->drawGrid(Color(0xFF444444));
+  // frameBuffer->drawGrid(Color(0xFF444444));
 
   for (auto &vertex : vertices) {
+    // Project the current point
     Vector2D projectedPoint = vertex.project();
     frameBuffer->drawFilledRectangle(
-        projectedPoint.x * (frameBuffer->getWidth() / 2),
-        projectedPoint.y * (frameBuffer->getHeight() / 2), 4, 4,
+        projectedPoint.x + (frameBuffer->getWidth() / 2),
+        projectedPoint.y + (frameBuffer->getHeight() / 2), 4, 4,
         Color(0xFFFFFF00));
   }
 
