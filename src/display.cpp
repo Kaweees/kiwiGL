@@ -40,6 +40,7 @@ Display::Display() {
       }
     }
   }
+  projectedVertices.resize(vertices.size());
 
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
@@ -100,8 +101,18 @@ void Display::update() {
   if (deltaTime < FRAME_TIME) {
     SDL_Delay(FRAME_TIME - deltaTime);
   } else {
-    // Rotate the vertices
-    for (auto &vertex : vertices) {
+    for (int i = 0; i < vertices.size(); i++) {
+      auto vertex = vertices[i];
+      // Translate the vertices
+      vertex.translate(camera.x, camera.y, camera.z);
+
+      // Rotate the vertices
+      // vertices[i].rotateX(0.01);
+      // vertices[i].rotateY(0.01);
+      // vertices[i].rotateZ(0.01);
+
+      // Project the current point
+      projectedVertices[i] = vertex.project();
     }
     deltaTime = 0;
   }
@@ -115,13 +126,9 @@ void Display::render() {
 
   // frameBuffer->drawGrid(Color(0xFF444444));
 
-  for (auto &vertex : vertices) {
-    // Project the current point
-    Vector2D projectedPoint = vertex.project();
-    frameBuffer->drawFilledRectangle(
-        projectedPoint.x + (frameBuffer->getWidth() / 2),
-        projectedPoint.y + (frameBuffer->getHeight() / 2), 4, 4,
-        Color(0xFFFFFF00));
+  for (auto &vertex : projectedVertices) {
+    frameBuffer->drawFilledRectangle(vertex.x + (frameBuffer->getWidth() / 2),
+        vertex.y + (frameBuffer->getHeight() / 2), 4, 4, Color(0xFFFFFF00));
   }
 
   // Update the texture with the frame buffer data

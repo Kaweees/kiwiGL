@@ -28,6 +28,9 @@ class Vector3D {
   // Project the vector onto a 2D plane
   Vector2D project() const;
 
+  // Translate the vector
+  void translate(double x, double y, double z);
+
   // Rotate the vector around the x-axis
   void rotateX(double theta);
 

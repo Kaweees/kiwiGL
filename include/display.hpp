@@ -20,6 +20,7 @@ class Display {
   SDL_Renderer *renderer;
   std::unique_ptr<FrameBuffer> frameBuffer;
   std::vector<Vector3D> vertices;
+  std::vector<Vector2D> projectedVertices;
 
   Vector3D camera;
   Vector3D rotation;
@@ -35,9 +36,6 @@ class Display {
 
   // Method to process input
   void processInput();
-
-  // Method to apply an orthographic projection to the vertices
-  // void project
 
   // Method to update the display
   void update();
