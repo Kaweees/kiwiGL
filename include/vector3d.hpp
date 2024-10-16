@@ -31,6 +31,12 @@ class Vector3D {
   // Translate the vector
   void translate(double x, double y, double z);
 
+  // Scale the vector
+  void scale(double x, double y, double z);
+
+  // Rotate the vector
+  void rotate(double x, double y, double z);
+
   // Rotate the vector around the x-axis
   void rotateX(double theta);
 

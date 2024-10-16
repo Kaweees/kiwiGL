@@ -14,6 +14,18 @@ void Vector3D::translate(double x, double y, double z) {
   this->z += z;
 }
 
+void Vector3D::scale(double x, double y, double z) {
+  this->x *= x;
+  this->y *= y;
+  this->z *= z;
+}
+
+void Vector3D::rotate(double x, double y, double z) {
+  rotateX(x);
+  rotateY(y);
+  rotateZ(z);
+}
+
 void Vector3D::rotateX(double theta) {
   double y_new = y * cos(theta) - z * sin(theta);
   double z_new = y * sin(theta) + z * cos(theta);

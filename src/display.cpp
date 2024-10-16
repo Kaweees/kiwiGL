@@ -102,18 +102,22 @@ void Display::update() {
     SDL_Delay(FRAME_TIME - deltaTime);
   } else {
     for (int i = 0; i < vertices.size(); i++) {
+      // Transform the vertices
       auto vertex = vertices[i];
-      // Translate the vertices
-      vertex.translate(camera.x, camera.y, camera.z);
 
       // Rotate the vertices
-      // vertices[i].rotateX(0.01);
-      // vertices[i].rotateY(0.01);
-      // vertices[i].rotateZ(0.01);
+      vertex.rotate(rotation.x, rotation.y, rotation.z);
 
-      // Project the current point
+      // Translate the vertices
+      vertex.translate(camera.x, camera.y, -camera.z);
+
+      // Scale the vertices
+      // vertex.scale(1.01, 1.01, 1.01);
+
+      // Project the transformed vertices
       projectedVertices[i] = vertex.project();
     }
+    rotation.translate(0.01, 0, 0);
     deltaTime = 0;
   }
 }
