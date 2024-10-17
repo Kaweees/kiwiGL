@@ -35,15 +35,15 @@ class Vector3D {
   void scale(double x, double y, double z);
 
   // Rotate the vector
-  void rotate(double x, double y, double z);
+  void rotate(double roll, double pitch, double yaw);
 
-  // Rotate the vector around the x-axis
+  // Rotate the vector around the x-axis (roll)
   void rotateX(double theta);
 
-  // Rotate the vector around the y-axis
+  // Rotate the vector around the y-axis (pitch)
   void rotateY(double theta);
 
-  // Rotate the vector around the z-axis
+  // Rotate the vector around the z-axis (yaw)
   void rotateZ(double theta);
 };
 }  // namespace graphics

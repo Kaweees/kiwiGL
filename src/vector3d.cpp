@@ -20,10 +20,10 @@ void Vector3D::scale(double x, double y, double z) {
   this->z *= z;
 }
 
-void Vector3D::rotate(double x, double y, double z) {
-  rotateX(x);
-  rotateY(y);
-  rotateZ(z);
+void Vector3D::rotate(double roll, double pitch, double yaw) {
+  rotateX(roll);
+  rotateY(pitch);
+  rotateZ(yaw);
 }
 
 void Vector3D::rotateX(double theta) {
