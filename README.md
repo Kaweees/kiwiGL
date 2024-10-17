@@ -77,16 +77,8 @@ To get a local copy of the project up and running on your machine, follow these 
 ### Convention
 
 The graphics library uses the following conventions:
-
 - right-handed coordinate system
 - counter-clockwise winding order
-- column-major matrices
-- row-major vectors
-
-- **Vectors**: `vec3` for 3D vectors, `vec4` for 4D vectors, and `vec2` for 2D vectors.
-- **Matrices**: `mat3` for 3x3 matrices, `mat4` for 4x4 matrices.
-- **Quaternions**: `quat` for quaternions.
-- **Colors**: `color` for RGB colors.
 
 
 ### Keyboard Controls
