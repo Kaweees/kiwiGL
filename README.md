@@ -95,15 +95,8 @@ To interact with the graphics library, use the following keyboard shortcuts:
 
 | Command Keybind | Command Description |
 | --------------- | ------------------- |
-| <kbd>leader</kbd> + <kbd>c</kbd> | create new window and switch to it |
-| <kbd>leader</kbd> + <kbd>#</kbd> | switch to window # |
-| <kbd>leader</kbd> + <kbd>n</kbd> | switch to next window |
-| <kbd>leader</kbd> + <kbd>p</kbd> | switch to previous window |
-| <kbd>leader</kbd> + <kbd>:</kbd> | swap window with next window |
-| <kbd>leader</kbd> + <kbd>;</kbd> | swap window with previous window |
-| <kbd>leader</kbd> + <kbd>&</kbd> | kill window and all panes in it |
+| <kbd>CTRL</kbd> + <kbd>q</kbd> | Quit the application |
 
-<!-- Normal | `<leader>` + `p` + `v` | Execute `:PackerSync` |
 
 <!-- PROJECT FILE STRUCTURE -->
 ## Project Structure
