@@ -28,6 +28,8 @@ class Display {
   Vector3D camera;
   Vector3D rotation;
 
+  SDL_Keycode keyPressed;
+
   int prevTime;
 
   public:
