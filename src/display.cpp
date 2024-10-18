@@ -37,15 +37,11 @@ Display::Display() {
   // Initialize the frame buffer
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
-#ifdef USE_CUDA
-  InitalizeCuda();
-#elif USE_METAL
-  // InitalizeMetal();
-#else
-  vertices.resize(NUM_VERTICES);
-  projectedVertices.resize(NUM_VERTICES);
-#endif
+  // Initialize the frame buffer
+  frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
+
   int numVertices = 0;
+
   // Initialize the vertices
   // Start loading my array of vectors
   // From -1 to 1 (in this 9x9x9 cube)
@@ -55,11 +51,18 @@ Display::Display() {
         if (numVertices >= NUM_VERTICES) {
           break;
         }
-        vertices[numVertices] = Vector3D(x, y, z);
+        vertices.push_back(Vector3D(x, y, z));
         numVertices++;
       }
     }
   }
+  projectedVertices.resize(vertices.size());
+
+  #ifdef USE_CUDA
+  InitalizeCuda();
+  #elif USE_METAL
+    // InitalizeMetal();
+  #endif
 
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,

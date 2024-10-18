@@ -58,13 +58,16 @@ class Display {
   // Method to free CUDA
   virtual void FreeCuda();
 
-  // Method to initialize Metal
-  // virtual void InitalizeMetal();
-
   // Method to launch CUDA
   virtual void LaunchCuda();
 
+  // Method to initialize Metal
+  // virtual void InitalizeMetal();
+
   // Method to free Metal
   // virtual void FreeMetal();
+
+  // Method to launch Metal
+  // virtual void LaunchMetal();
 };
 }  // namespace graphics
