@@ -42,6 +42,9 @@ Display::Display() {
   // Initialize the frame buffer
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
+  d_vertices == nullptr;
+  d_projectedVertices == nullptr;
+
   int numVertices = 0;
 
   // Initialize the vertices
@@ -138,7 +141,7 @@ void Display::update() {
     vertex.translate(camera.x, camera.y, -camera.z);
 
     // Scale the vertices
-    // vertex.scale(1.01, 1.01, 1.01);
+    vertex.scale(1.01, 1.01, 1.01);
 
     // Project the transformed vertices
     projectedVertices[i] = vertex.project();

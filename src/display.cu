@@ -38,6 +38,12 @@ __device__ __host__ void cudaTranslate(Vector3D* vertex, double x, double y, dou
     vertex->z += z;
 }
 
+__device__ __host__ void cudaScale(Vector3D* vertex, double x, double y, double z) {
+    vertex->x *= x;
+    vertex->y *= y;
+    vertex->z *= z;
+}
+
 __device__ __host__ void cudaProject(const Vector3D* vertex, Vector2D* projectedVertex) {
     projectedVertex->x = (vertex->x * FOV) / vertex->z;
     projectedVertex->y = (vertex->y * FOV) / vertex->z;
@@ -54,17 +60,31 @@ __global__ void transformVerticesKernel(Vector3D* vertices, Vector2D* projectedV
         // Translate the vertex
         cudaTranslate(&vertex, camera.x, camera.y, -camera.z);
 
+        // Scale the vertex
+        cudaScale(&vertex, 1.01, 1.01, 1.01);
+
         // Project the transformed vertex
         cudaProject(&vertex, &projectedVertices[idx]);
     }
 }
 void Display::InitalizeCuda() {
-  cudaMalloc((void**)&d_vertices, NUM_VERTICES * sizeof(Vector3D));
-  cudaMalloc((void**)&d_projectedVertices, NUM_VERTICES * sizeof(Vector2D));
+    // Allocate memory on the device
+    cudaMalloc((void**)&d_vertices, NUM_VERTICES * sizeof(Vector3D));
+    cudaMalloc((void**)&d_projectedVertices, NUM_VERTICES * sizeof(Vector2D));
+    if (d_vertices == nullptr || d_projectedVertices == nullptr) {
+        fprintf(stderr, "Failed to allocate memory on the device.\n");
+        exit(EXIT_FAILURE);
+    }
 }
 void Display::FreeCuda() {
-    cudaFree(d_vertices);
-    cudaFree(d_projectedVertices);
+    if (d_vertices != nullptr) {
+        cudaFree(d_vertices);
+        d_vertices = nullptr;
+    }
+    if (d_projectedVertices != nullptr) {
+        cudaFree(d_projectedVertices);
+        d_projectedVertices = nullptr;
+    }
 }
 void Display::LaunchCuda() {
     // Copy vertices to device
@@ -78,7 +98,13 @@ void Display::LaunchCuda() {
     // Copy projected vertices back to host
     cudaMemcpy(projectedVertices.data(), d_projectedVertices, NUM_VERTICES * sizeof(Vector2D), cudaMemcpyDeviceToHost);
 
-    // Synchronize
+    // Synchronize to ensure all operations are complete
     cudaDeviceSynchronize();
+
+    // Check for CUDA errors
+    cudaError_t cudaStatus = cudaGetLastError();
+    if (cudaStatus != cudaSuccess) {
+        fprintf(stderr, "CUDA error: %s\n", cudaGetErrorString(cudaStatus));
+    }
 }
 } // namespace graphics
