@@ -118,11 +118,9 @@ Display::~Display() {
 }
 
 void Display::update() {
-  int currentTime = SDL_GetTicks();
-  int deltaTime = currentTime - prevTime;
-  prevTime = currentTime;
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
+  prevTime = SDL_GetTicks();
 
-  if (true) {
 #ifdef USE_CUDA
     LaunchCuda();
 #elif USE_METAL
@@ -163,8 +161,6 @@ void Display::update() {
         break;
     }
     rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
-    deltaTime = 0;
-  }
 }
 
 void Display::render() {
