@@ -66,6 +66,6 @@ class Display {
   virtual void LaunchCuda();
 
   // Method to free Metal
-  virtual void FreeMetal();
+  // virtual void FreeMetal();
 };
 }  // namespace graphics

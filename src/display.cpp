@@ -7,7 +7,6 @@
 #include "../include/display.metal"
 #endif
 
-
 #include <SDL2/SDL.h>
 
 #include "../include/constants.hpp"

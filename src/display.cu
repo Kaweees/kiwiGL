@@ -1,4 +1,5 @@
 #include "../include/display.cuh"
+#include "../include/vector3d.cuh"
 #include "../include/constants.hpp"
 
 #include <cuda_runtime.h>
@@ -6,31 +7,19 @@
 #include "../include/display.hpp"
 
 namespace graphics {
-__host__ __device__ void cudaRotate(Vector3D* vertex, Vector2D* projectedVertices, double roll, double pitch, double yaw, int idx) {
-    vertex->rotate(roll, pitch, yaw);
-}
-__host__ __device__ void cudaTranslate(Vector3D* vertex, Vector2D* projectedVertices, double x, double y, double z, int idx) {
-    vertex->x += x;
-    vertex->y += y;
-    vertex->z += z;
-}
-__host__ __device__ void cudaProject(Vector3D* vertex, Vector2D* projectedVertices, int idx) {
-    projectedVertices[idx].x = (vertex->x * FOV) / vertex->z;
-    projectedVertices[idx].y = (vertex->y * FOV) / vertex->z;
-}
 __global__ void transformVerticesKernel(Vector3D* vertices, Vector2D* projectedVertices, int size, Vector3D rotation, Vector3D camera) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx < size) {
         Vector3D vertex = vertices[idx];
 
         // Rotate the vertex
-        cudaRotate(&vertex, projectedVertices, rotation.x, rotation.y, rotation.z, idx);
+        cudaRotate(&vertex, rotation.x, rotation.y, rotation.z);
 
         // Translate the vertex
-        cudaTranslate(&vertex, projectedVertices, camera.x, camera.y, -camera.z, idx);
+        cudaTranslate(&vertex, camera.x, camera.y, -camera.z);
 
         // Project the transformed vertex
-        cudaProject(&vertex, projectedVertices, idx);
+        cudaProject(&vertex, &projectedVertices[idx]);
     }
 }
 void Display::InitalizeCuda() {
