@@ -118,49 +118,50 @@ Display::~Display() {
 }
 
 void Display::update() {
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
+    ;
   prevTime = SDL_GetTicks();
 
 #ifdef USE_CUDA
-    LaunchCuda();
+  LaunchCuda();
 #elif USE_METAL
-    LaunchMetal();
+  LaunchMetal();
 #else
-    for (int i = 0; i < vertices.size(); i++) {
-      // Transform the vertices
-      auto vertex = vertices[i];
+  for (int i = 0; i < vertices.size(); i++) {
+    // Transform the vertices
+    auto vertex = vertices[i];
 
-      // Rotate the vertices
-      vertex.rotate(rotation.x, rotation.y, rotation.z);
+    // Rotate the vertices
+    vertex.rotate(rotation.x, rotation.y, rotation.z);
 
-      // Translate the vertices
-      vertex.translate(camera.x, camera.y, -camera.z);
+    // Translate the vertices
+    vertex.translate(camera.x, camera.y, -camera.z);
 
-      // Scale the vertices
-      // vertex.scale(1.01, 1.01, 1.01);
+    // Scale the vertices
+    // vertex.scale(1.01, 1.01, 1.01);
 
-      // Project the transformed vertices
-      projectedVertices[i] = vertex.project();
-    }
+    // Project the transformed vertices
+    projectedVertices[i] = vertex.project();
+  }
 #endif
-    // Update rotation
-    switch (keyPressed) {
-      case SDLK_UP:
-        rotationSpeed.x += 0.01;
-        break;
-      case SDLK_DOWN:
-        rotationSpeed.x -= 0.01;
-        break;
-      case SDLK_LEFT:
-        rotationSpeed.y += 0.01;
-        break;
-      case SDLK_RIGHT:
-        rotationSpeed.y -= 0.01;
-        break;
-      default:
-        break;
-    }
-    rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
+  // Update rotation
+  switch (keyPressed) {
+    case SDLK_UP:
+      rotationSpeed.x += 0.01;
+      break;
+    case SDLK_DOWN:
+      rotationSpeed.x -= 0.01;
+      break;
+    case SDLK_LEFT:
+      rotationSpeed.y += 0.01;
+      break;
+    case SDLK_RIGHT:
+      rotationSpeed.y -= 0.01;
+      break;
+    default:
+      break;
+  }
+  rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
 }
 
 void Display::render() {
