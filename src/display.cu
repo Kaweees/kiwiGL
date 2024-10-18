@@ -1,14 +1,59 @@
 #include "../include/display.cuh"
+#include "../include/constants.hpp"
 
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include "../include/display.hpp"
 
 namespace graphics {
+__host__ __device__ void cudaRotate(Vector3D* vertex, Vector2D* projectedVertices, double roll, double pitch, double yaw, int idx) {
+    vertex->rotate(roll, pitch, yaw);
+}
+__host__ __device__ void cudaTranslate(Vector3D* vertex, Vector2D* projectedVertices, double x, double y, double z, int idx) {
+    vertex->x += x;
+    vertex->y += y;
+    vertex->z += z;
+}
+__host__ __device__ void cudaProject(Vector3D* vertex, Vector2D* projectedVertices, int idx) {
+    projectedVertices[idx].x = (vertex->x * FOV) / vertex->z;
+    projectedVertices[idx].y = (vertex->y * FOV) / vertex->z;
+}
+__global__ void transformVerticesKernel(Vector3D* vertices, Vector2D* projectedVertices, int size, Vector3D rotation, Vector3D camera) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < size) {
+        Vector3D vertex = vertices[idx];
+
+        // Rotate the vertex
+        cudaRotate(&vertex, projectedVertices, rotation.x, rotation.y, rotation.z, idx);
+
+        // Translate the vertex
+        cudaTranslate(&vertex, projectedVertices, camera.x, camera.y, -camera.z, idx);
+
+        // Project the transformed vertex
+        cudaProject(&vertex, projectedVertices, idx);
+    }
+}
 void Display::InitalizeCuda() {
-  cudaMalloc((void**)&d_frameBuffer, displayMode.w * displayMode.h * sizeof(uint32_t));
+  cudaMalloc((void**)&d_vertices, NUM_VERTICES * sizeof(Vector3D));
+  cudaMalloc((void**)&d_projectedVertices, NUM_VERTICES * sizeof(Vector2D));
 }
 void Display::FreeCuda() {
-    cudaFree(d_frameBuffer);
+    cudaFree(d_vertices);
+    cudaFree(d_projectedVertices);
+}
+void Display::LaunchCuda() {
+    // Copy vertices to device
+    cudaMemcpy(d_vertices, vertices.data(), NUM_VERTICES * sizeof(Vector3D), cudaMemcpyHostToDevice);
+
+    // Launch kernel
+    int threadsPerBlock = 256;
+    int blocksPerGrid = (NUM_VERTICES + threadsPerBlock - 1) / threadsPerBlock;
+    transformVerticesKernel<<<blocksPerGrid, threadsPerBlock>>>(d_vertices, d_projectedVertices, NUM_VERTICES, rotation, camera);
+
+    // Copy projected vertices back to host
+    cudaMemcpy(projectedVertices.data(), d_projectedVertices, NUM_VERTICES * sizeof(Vector2D), cudaMemcpyDeviceToHost);
+
+    // Synchronize
+    cudaDeviceSynchronize();
 }
 } // namespace graphics

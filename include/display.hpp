@@ -20,9 +20,11 @@ class Display {
   SDL_Event *event;
   SDL_Renderer *renderer;
   std::unique_ptr<FrameBuffer> frameBuffer;
-  uint32_t *d_frameBuffer;
   std::vector<Vector3D> vertices;
   std::vector<Vector2D> projectedVertices;
+  Vector3D *d_vertices;
+  Vector2D *d_projectedVertices;
+
 
   Vector3D camera;
   Vector3D rotation;
@@ -59,6 +61,9 @@ class Display {
 
   // Method to initialize Metal
   virtual void InitalizeMetal();
+
+  // Method to launch CUDA
+  virtual void LaunchCuda();
 
   // Method to free Metal
   virtual void FreeMetal();
