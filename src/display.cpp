@@ -40,7 +40,7 @@ Display::Display() {
 #ifdef USE_CUDA
   InitalizeCuda();
 #elif USE_METAL
-  InitalizeMetal();
+  // InitalizeMetal();
 #else
   vertices.resize(NUM_VERTICES);
   projectedVertices.resize(NUM_VERTICES);

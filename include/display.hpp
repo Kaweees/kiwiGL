@@ -59,7 +59,7 @@ class Display {
   virtual void FreeCuda();
 
   // Method to initialize Metal
-  virtual void InitalizeMetal();
+  // virtual void InitalizeMetal();
 
   // Method to launch CUDA
   virtual void LaunchCuda();
