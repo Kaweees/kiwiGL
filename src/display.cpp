@@ -60,11 +60,11 @@ Display::Display() {
   }
   projectedVertices.resize(vertices.size());
 
-  #ifdef USE_CUDA
+#ifdef USE_CUDA
   InitalizeCuda();
-  #elif USE_METAL
-    // InitalizeMetal();
-  #endif
+#elif USE_METAL
+  // InitalizeMetal();
+#endif
 
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
@@ -147,20 +147,20 @@ void Display::update() {
 #endif
     // Update rotation
     switch (keyPressed) {
-        case SDLK_UP:
-          rotationSpeed.x += 0.01;
-          break;
-        case SDLK_DOWN:
-          rotationSpeed.x -= 0.01;
-          break;
-        case SDLK_LEFT:
-          rotationSpeed.y += 0.01;
-          break;
-        case SDLK_RIGHT:
-          rotationSpeed.y -= 0.01;          
-          break;
-        default:
-          break;
+      case SDLK_UP:
+        rotationSpeed.x += 0.01;
+        break;
+      case SDLK_DOWN:
+        rotationSpeed.x -= 0.01;
+        break;
+      case SDLK_LEFT:
+        rotationSpeed.y += 0.01;
+        break;
+      case SDLK_RIGHT:
+        rotationSpeed.y -= 0.01;
+        break;
+      default:
+        break;
     }
     rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
     deltaTime = 0;
@@ -197,10 +197,10 @@ void Display::processInput() {
     switch (event.type) {
       case SDL_KEYDOWN:
         keyPressed = event.key.keysym.sym;
-      break;
-    default:
-      keyPressed = SDLK_UNKNOWN;
-  }
+        break;
+      default:
+        keyPressed = SDLK_UNKNOWN;
+    }
   }
 }
 
