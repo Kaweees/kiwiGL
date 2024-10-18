@@ -1,5 +1,6 @@
 #include "../include/frame_buffer.hpp"
-#include <cmath> // Add this at the top of the file
+
+#include <cmath>  // Add this at the top of the file
 
 namespace graphics {
 
@@ -14,7 +15,7 @@ void FrameBuffer::drawPixel(int x, int y, const Color &color) {
 
 void FrameBuffer::drawLine(int x1, int y1, int x2, int y2, const Color &color) {
   // Bresenham's line algorithm
-  int dx = std::abs(x2 - x1); // Change abs to std::abs
+  int dx = std::abs(x2 - x1);  // Change abs to std::abs
   int dy = std::abs(y2 - y1);
   int sx = (x1 < x2) ? 1 : -1;
   int sy = (y1 < y2) ? 1 : -1;

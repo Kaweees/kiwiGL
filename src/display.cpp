@@ -1,4 +1,5 @@
 #include "../include/display.hpp"
+
 #include "../include/constants.hpp"
 
 #ifdef USE_CUDA
@@ -36,14 +37,14 @@ Display::Display() {
   // Initialize the frame buffer
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
-  #ifdef USE_CUDA
+#ifdef USE_CUDA
   InitalizeCuda();
-  #elif USE_METAL
+#elif USE_METAL
   InitalizeMetal();
-  #else 
+#else
   vertices.resize(NUM_VERTICES);
   projectedVertices.resize(NUM_VERTICES);
-  #endif
+#endif
   int numVertices = 0;
   // Initialize the vertices
   // Start loading my array of vectors
@@ -59,7 +60,7 @@ Display::Display() {
       }
     }
   }
-  
+
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
       SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(), frameBuffer->getHeight(),
@@ -117,11 +118,11 @@ void Display::update() {
   prevTime = currentTime;
 
   if (true) {
-    #ifdef USE_CUDA
+#ifdef USE_CUDA
     LaunchCuda();
-    #elif USE_METAL
+#elif USE_METAL
     LaunchMetal();
-    #else
+#else
     for (int i = 0; i < vertices.size(); i++) {
       // Transform the vertices
       auto vertex = vertices[i];
@@ -138,7 +139,7 @@ void Display::update() {
       // Project the transformed vertices
       projectedVertices[i] = vertex.project();
     }
-    #endif
+#endif
     // Update rotation
     rotation.translate(0.01, 0, 0);
     deltaTime = 0;

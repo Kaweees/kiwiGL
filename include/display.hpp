@@ -25,7 +25,6 @@ class Display {
   Vector3D *d_vertices;
   Vector2D *d_projectedVertices;
 
-
   Vector3D camera;
   Vector3D rotation;
 
