@@ -27,6 +27,7 @@ class Display {
 
   Vector3D camera;
   Vector3D rotation;
+  Vector3D rotationSpeed;
 
   SDL_Keycode keyPressed;
 

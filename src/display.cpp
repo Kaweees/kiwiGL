@@ -18,7 +18,8 @@ Display::Display() {
   // Initialize the camera
   camera = Vector3D(0, 0, -5);
   rotation = Vector3D(0, 0, 0);
-  keyPressed = SDLK_UP;
+  rotationSpeed = Vector3D(0, 0, 0);
+  keyPressed = SDLK_UNKNOWN;
 
   prevTime = SDL_GetTicks();
 
@@ -147,19 +148,21 @@ void Display::update() {
     // Update rotation
     switch (keyPressed) {
         case SDLK_UP:
-          rotation.x += 0.01;
+          rotationSpeed.x += 0.01;
           break;
         case SDLK_DOWN:
-          rotation.x -= 0.01;
+          rotationSpeed.x -= 0.01;
           break;
         case SDLK_LEFT:
-          rotation.y += 0.01;
+          rotationSpeed.y += 0.01;
           break;
         case SDLK_RIGHT:
-          rotation.y -= 0.01;          
+          rotationSpeed.y -= 0.01;          
           break;
-      }
-    // rotation.translate(0.01, 0, 0);
+        default:
+          break;
+    }
+    rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
     deltaTime = 0;
   }
 }
@@ -194,10 +197,9 @@ void Display::processInput() {
     switch (event.type) {
       case SDL_KEYDOWN:
         keyPressed = event.key.keysym.sym;
-      printf("Key pressed: %c\n", keyPressed);
       break;
     default:
-      break;
+      keyPressed = SDLK_UNKNOWN;
   }
   }
 }
