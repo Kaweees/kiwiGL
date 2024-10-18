@@ -1,13 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#ifdef USE_CUDA
-#include "../include/display.cuh"
-#elif USE_METAL
-#include "../include/display.metal"
-#else
 #include "../include/display.hpp"
-#endif
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1

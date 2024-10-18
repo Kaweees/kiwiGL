@@ -13,12 +13,14 @@ namespace graphics {
 class Display {
   private:
   // Constants for display
+  SDL_DisplayMode displayMode;
   SDL_Window *window;
   SDL_Texture *texture;
   SDL_Surface *surface;
   SDL_Event *event;
   SDL_Renderer *renderer;
   std::unique_ptr<FrameBuffer> frameBuffer;
+  uint32_t *d_frameBuffer;
   std::vector<Vector3D> vertices;
   std::vector<Vector2D> projectedVertices;
 
@@ -48,5 +50,17 @@ class Display {
 
   // Method to check if the display should close
   bool shouldClose() const;
+
+  // Method to initialize CUDA
+  virtual void InitalizeCuda();
+
+  // Method to free CUDA
+  virtual void FreeCuda();
+
+  // Method to initialize Metal
+  virtual void InitalizeMetal();
+
+  // Method to free Metal
+  virtual void FreeMetal();
 };
 }  // namespace graphics

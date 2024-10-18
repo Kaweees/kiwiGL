@@ -1,5 +1,12 @@
 #include "../include/display.hpp"
 
+#ifdef USE_CUDA
+#include "../include/display.cuh"
+#elif USE_METAL
+#include "../include/display.metal"
+#endif
+
+
 #include <SDL2/SDL.h>
 
 #include "../include/constants.hpp"
@@ -21,14 +28,18 @@ Display::Display() {
   }
 
   // Query SDL for the display mode
-  SDL_DisplayMode displayMode;
   if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
     fprintf(stderr, "SDL_GetCurrentDisplayMode failed: %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
   }
 
   // Initialize the frame buffer
+  #ifdef USE_CUDA
+  InitalizeCuda();
+  InitalizeMetal();
+  #else 
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
+  #endif
 
   // Initialize the vertices
   // Start loading my array of vectors
@@ -98,9 +109,7 @@ void Display::update() {
   int deltaTime = currentTime - prevTime;
   prevTime = currentTime;
 
-  if (deltaTime < FRAME_TIME) {
-    SDL_Delay(FRAME_TIME - deltaTime);
-  } else {
+  if (true) {
     for (int i = 0; i < vertices.size(); i++) {
       // Transform the vertices
       auto vertex = vertices[i];
