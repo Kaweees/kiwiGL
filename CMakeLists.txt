@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR) # Set the minimum required version of CMake
 project(graphics LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14) # Use C++14 standard for more features
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror") # Set the compiler flags to include all warnings and treat them as errors

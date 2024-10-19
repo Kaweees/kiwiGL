@@ -33,7 +33,7 @@ A three-dimensional graphics library from scratch written in C++13 and accelerat
 
 ### Built With
 
-[![Neovim][C++-shield]][C++-url]
+[![C++][C++-shield]][C++-url]
 [![CUDA][CUDA-shield]][CUDA-url]
 [![Apple][Apple-shield]][Apple-url]
 [![GitHub Actions][github-actions-shield]][github-actions-url]
