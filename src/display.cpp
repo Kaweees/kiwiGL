@@ -14,15 +14,19 @@
 #include "../include/vector3d.hpp"
 
 namespace graphics {
+#ifndef BENCHMARK_MODE
+// Constructor to initialize memory
 Display::Display() {
+#else
+Display::Display(uint32_t numOfFrames) {
+#endif
   // Initialize the camera
   camera = Vector3D(0, 0, -5);
   rotation = Vector3D(0, 0, 0);
   rotationSpeed = Vector3D(0, 0, 0);
+#ifndef BENCHMARK_MODE
   keyPressed = SDLK_UNKNOWN;
-
   prevTime = SDL_GetTicks();
-
   // Initialize SDL
   if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
     fprintf(
@@ -35,6 +39,10 @@ Display::Display() {
     fprintf(stderr, "SDL_GetCurrentDisplayMode failed: %s\n", SDL_GetError());
     exit(EXIT_FAILURE);
   }
+#else
+  count = 0;
+  frameCount = numOfFrames;
+#endif
 
   // Initialize the frame buffer
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
@@ -42,8 +50,8 @@ Display::Display() {
   // Initialize the frame buffer
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
-  d_vertices == nullptr;
-  d_projectedVertices == nullptr;
+  d_vertices = nullptr;
+  d_projectedVertices = nullptr;
 
   int numVertices = 0;
 
@@ -66,9 +74,10 @@ Display::Display() {
 #ifdef USE_CUDA
   InitalizeCuda();
 #elif USE_METAL
-  // InitalizeMetal();
+  InitalizeMetal();
 #endif
 
+#ifndef BENCHMARK_MODE
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
       SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(), frameBuffer->getHeight(),
@@ -99,6 +108,7 @@ Display::Display() {
 
   // Set the blend mode
   SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+#endif
 }
 
 Display::~Display() {
@@ -106,6 +116,7 @@ Display::~Display() {
   frameBuffer.reset();
 
   // Free the window
+#ifndef BENCHMARK_MODE
   SDL_DestroyWindow(window);
   window = nullptr;
 
@@ -118,12 +129,14 @@ Display::~Display() {
 
   // Quit SDL subsystems
   SDL_Quit();
+#endif
 }
 
 void Display::update() {
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-    ;
+#ifndef BENCHMARK_MODE
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
   prevTime = SDL_GetTicks();
+#endif
 
 #ifdef USE_CUDA
   LaunchCuda();
@@ -147,6 +160,7 @@ void Display::update() {
     projectedVertices[i] = vertex.project();
   }
 #endif
+#ifndef BENCHMARK_MODE
   // Update rotation
   switch (keyPressed) {
     case SDLK_UP:
@@ -165,13 +179,15 @@ void Display::update() {
       break;
   }
   rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
+#endif
 }
 
 void Display::render() {
   // Clear the renderer
   clear();
 
-  // frameBuffer->drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0, 255));
+  // frameBuffer->drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0,
+  // 255));
 
   // frameBuffer->drawGrid(Color(0xFF444444));
 
@@ -180,6 +196,7 @@ void Display::render() {
         vertex.y + (frameBuffer->getHeight() / 2), 4, 4, Color(0xFFFFFF00));
   }
 
+#ifndef BENCHMARK_MODE
   // Update the texture with the frame buffer data
   SDL_UpdateTexture(texture, nullptr, frameBuffer->getData().data(),
       frameBuffer->getWidth() * sizeof(uint32_t));
@@ -189,9 +206,11 @@ void Display::render() {
 
   // Present the renderer
   SDL_RenderPresent(renderer);
+#endif
 }
 
 void Display::processInput() {
+#ifndef BENCHMARK_MODE
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
@@ -202,16 +221,26 @@ void Display::processInput() {
         keyPressed = SDLK_UNKNOWN;
     }
   }
+#endif
 }
 
 void Display::clear() {
+#ifndef BENCHMARK_MODE
   // Clear the renderer
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
+#endif
 
   // Clear the frame buffer
   frameBuffer->clear(Color(0, 0, 0, 0));
 }
 
-bool Display::shouldClose() const { return SDL_QuitRequested(); }
+bool Display::shouldClose() {
+#ifndef BENCHMARK_MODE
+  return SDL_QuitRequested();
+#else
+  count++;
+  return count >= frameCount;
+#endif
+}
 }  // namespace graphics

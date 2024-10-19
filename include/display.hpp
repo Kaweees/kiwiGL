@@ -14,11 +14,18 @@ class Display {
   private:
   // Constants for display
   SDL_DisplayMode displayMode;
+#ifndef BENCHMARK_MODE
   SDL_Window *window;
   SDL_Texture *texture;
   SDL_Surface *surface;
   SDL_Event *event;
   SDL_Renderer *renderer;
+  SDL_Keycode keyPressed;
+  uint32_t prevTime;
+#else
+  uint32_t count;
+  uint32_t frameCount;
+#endif
   std::unique_ptr<FrameBuffer> frameBuffer;
   std::vector<Vector3D> vertices;
   std::vector<Vector2D> projectedVertices;
@@ -29,13 +36,13 @@ class Display {
   Vector3D rotation;
   Vector3D rotationSpeed;
 
-  SDL_Keycode keyPressed;
-
-  int prevTime;
-
   public:
+#ifndef BENCHMARK_MODE
   // Constructor to initialize memory
   Display();
+#else
+  Display(uint32_t numOfFrames);
+#endif
 
   // Destructor to free memory
   ~Display();
@@ -53,8 +60,9 @@ class Display {
   void clear();
 
   // Method to check if the display should close
-  bool shouldClose() const;
+  bool shouldClose();
 
+#ifdef USE_CUDA
   // Method to initialize CUDA
   virtual void InitalizeCuda();
 
@@ -63,14 +71,15 @@ class Display {
 
   // Method to launch CUDA
   virtual void LaunchCuda();
-
+#elif USE_METAL
   // Method to initialize Metal
-  // virtual void InitalizeMetal();
+  virtual void InitalizeMetal();
 
   // Method to free Metal
-  // virtual void FreeMetal();
+  virtual void FreeMetal();
 
   // Method to launch Metal
-  // virtual void LaunchMetal();
+  virtual void LaunchMetal();
+#endif
 };
 }  // namespace graphics
