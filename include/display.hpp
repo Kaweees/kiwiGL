@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "../include/frame_buffer.hpp"
+#include "../include/mesh.hpp"  // Add this line
 #include "../include/vector3d.hpp"
 
 namespace graphics {
@@ -35,6 +36,8 @@ class Display {
   Vector3D camera;
   Vector3D rotation;
   Vector3D rotationSpeed;
+
+  Mesh mesh;  // Add a mesh member
 
   public:
 #ifndef BENCHMARK_MODE
