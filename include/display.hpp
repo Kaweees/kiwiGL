@@ -16,6 +16,7 @@ class Display {
   // Constants for display
   SDL_DisplayMode displayMode;
 #ifndef BENCHMARK_MODE
+  bool fullScreen;
   SDL_Window *window;
   SDL_Texture *texture;
   SDL_Surface *surface;

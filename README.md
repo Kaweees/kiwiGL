@@ -69,7 +69,7 @@ To get a local copy of the project up and running on your machine, follow these 
 
 2. Build and execute the project
    ```sh
-   clear && cmake CMakeLists.txt && make && ./target/release/graphics
+   clear && cmake CMakeLists.txt && make && ./target/release/kiwigl
    ```
 
 ## Usage
@@ -77,7 +77,7 @@ To get a local copy of the project up and running on your machine, follow these 
 ### Convention
 
 The graphics library uses the following conventions:
-- right-handed coordinate system
+- [left-handed coordinate system](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/coordinate-systems.html#:~:text=The%20differentiation%20between%20left%2Dhanded,a%20right%2Dhand%20coordinate%20system)
 - counter-clockwise winding order
 
 

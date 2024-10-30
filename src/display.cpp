@@ -25,6 +25,7 @@ Display::Display(uint32_t numOfFrames) {
   rotation = Vector3D(0, 0, 0);
   rotationSpeed = Vector3D(0, 0, 0);
 #ifndef BENCHMARK_MODE
+  fullScreen = true;
   keyPressed = SDLK_UNKNOWN;
   prevTime = SDL_GetTicks();
   // Initialize SDL
@@ -81,7 +82,7 @@ Display::Display(uint32_t numOfFrames) {
   // Initialize the SDL window
   window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
       SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(), frameBuffer->getHeight(),
-      SDL_WINDOW_BORDERLESS);
+      fullScreen ? SDL_WINDOW_BORDERLESS : SDL_WINDOW_SHOWN);
   if (window == nullptr) {
     fprintf(
         stderr, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -134,8 +135,7 @@ Display::~Display() {
 
 void Display::update() {
 #ifndef BENCHMARK_MODE
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-    ;
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
   prevTime = SDL_GetTicks();
 #endif
 
