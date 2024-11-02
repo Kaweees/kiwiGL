@@ -29,7 +29,7 @@ class FrameBuffer {
   // Method to draw a line on the display using Bresenham's line algorithm
   void drawLine(int x1, int y1, int x2, int y2, const Color &color);
 
-  // 
+  //
 
   // Method to draw a grid on the display
   void drawGrid(const Color &color);
