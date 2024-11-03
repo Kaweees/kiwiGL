@@ -4,34 +4,56 @@
 #include <iostream>
 #include <sstream>
 
+#include "../include/face.hpp"
+
 namespace graphics {
 
 Mesh::Mesh() {}
 
-Mesh::~Mesh() {}
-
-bool Mesh::loadFromFile(const std::string& filename) {
-  std::ifstream file(filename);
-  if (!file.is_open()) {
+bool Mesh::loadOBJ(const std::string& filename) {
+  std::ifstream file(filename, std::ios::binary);
+  if (file.is_open()) {
+    std::string line;
+    while (std::getline(file, line)) {
+      if (line.find("v ") != std::string::npos) {
+        // Parse the vertex
+        Vector3D vertex;
+        if (sscanf(line.c_str(), "v %lf %lf %lf", &vertex.x, &vertex.y,
+                &vertex.z) == 3) {
+          addVertex(vertex);
+        }
+      } else if (line.find("vt ") != std::string::npos) {
+        // Parse the texture coordinate
+        Texture2D texture;
+        if (sscanf(line.c_str(), "vt %lf %lf", &texture.u, &texture.v) == 2) {
+          addTexture(texture);
+        }
+      } else if (line.find("f ") != std::string::npos) {
+        // Parse the face
+        int v1, v2, v3, t1, t2, t3, n1, n2, n3;
+        if (sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &t1, &n1,
+                &v2, &t2, &n2, &v3, &t3, &n3) == 9) {
+          addFace(v1, v2, v3, textures[t1 - 1], textures[t2 - 1],
+              textures[t3 - 1], Color::WHITE);
+        }
+      }
+    }
+    file.close();
+    return true;
+  } else {
     std::cerr << "Failed to open mesh file: " << filename << std::endl;
     return false;
   }
-
-  std::string line;
-  while (std::getline(file, line)) {
-    std::istringstream iss(line);
-    double x, y, z;
-    if (iss >> x >> y >> z) {
-      addVertex(Vector3D(x, y, z));
-    }
-  }
-
-  file.close();
-  return true;
 }
 
 const std::vector<Vector3D>& Mesh::getVertices() const { return vertices; }
 
 void Mesh::addVertex(const Vector3D& vertex) { vertices.push_back(vertex); }
+
+void Mesh::addTexture(const Texture2D& texture) { textures.push_back(texture); }
+void Mesh::addFace(int v1, int v2, int v3, const Texture2D& t1,
+    const Texture2D& t2, const Texture2D& t3, const Color& color) {
+  faces.push_back(Face(v1, v2, v3, t1, t2, t3, color));
+}
 
 }  // namespace graphics
