@@ -30,5 +30,7 @@ class Color {
   explicit operator uint32_t() const {
     return (alpha << 24) | (blue << 16) | (green << 8) | red;
   }
+
+  static const Color WHITE;
 };
 }  // namespace graphics

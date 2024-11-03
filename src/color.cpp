@@ -23,4 +23,5 @@ Color Color::lerp(const Color& other, float t) const {
       static_cast<uint8_t>(alpha + (other.alpha - alpha) * t));
 }
 
+const Color Color::WHITE(255, 255, 255, 255);
 }  // namespace graphics
