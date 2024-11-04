@@ -187,23 +187,18 @@ void Display::render() {
   // Clear the renderer
   clear();
 
-  // frameBuffer->drawFilledRectangle(64, 64, 128, 128, Color(0, 255, 0,
-  // 255));
-
-  // frameBuffer->drawGrid(Color(0xFF444444));
+  frameBuffer->drawGrid(Color(0xFF444444));
 
   for (auto &triangle : projectedTriangles) {
     for (int i = 0; i < 3; i++) {
       // Draw vertex points
       frameBuffer->drawFilledRectangle(
           triangle.points[i].x, triangle.points[i].y, 3, 3, Color(0xFFFFFF00));
-      // Draw lines between points
-      if (i < 2) {
-        frameBuffer->drawLine(triangle.points[i].x, triangle.points[i].y,
-            triangle.points[i + 1].x, triangle.points[i + 1].y,
-            Color(0xFFFFFF00));
-      }
     }
+    // Draw triangle
+    frameBuffer->drawTriangle(triangle.points[0].x, triangle.points[0].y,
+        triangle.points[1].x, triangle.points[1].y, triangle.points[2].x,
+        triangle.points[2].y, Color(0xFFFFFF00));
   }
 
 #ifndef BENCHMARK_MODE

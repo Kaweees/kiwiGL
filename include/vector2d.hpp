@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cmath>
-#include <iostream>
-
 namespace graphics {
 // Represents a two-dimensional vector
 class Vector2D {

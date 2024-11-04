@@ -77,6 +77,13 @@ void FrameBuffer::drawFilledRectangle(
   }
 }
 
+void FrameBuffer::drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,
+    const Color &color) {
+  drawLine(x1, y1, x2, y2, color);
+  drawLine(x2, y2, x3, y3, color);
+  drawLine(x3, y3, x1, y1, color);
+}
+
 void FrameBuffer::clear(const Color &color) {
   uint32_t clearColor = static_cast<uint32_t>(color);
   std::fill(buffer.begin(), buffer.end(), clearColor);

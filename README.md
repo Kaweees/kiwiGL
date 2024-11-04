@@ -74,6 +74,18 @@ To get a local copy of the project up and running on your machine, follow these 
 
 ## Usage
 
+
+### Benchmarks
+
+The graphics library is capable of rendering 3D scenes with thousands of triangles at interactive frame rates. The following benchmarks were conducted on a 2019 MacBook Pro with a 2.3 GHz 8-Core Intel Core i9 processor and 16 GB of RAM.
+
+| Benchmark | Description | Result |
+| --------- | ----------- | ------ |
+| `cube` | Render a cube with 12 triangles | 60 FPS |
+| `sphere` | Render a sphere with 960 triangles | 60 FPS |
+| `bunny` | Render a Stanford Bunny with 69451 triangles | 60 FPS |
+| `dragon` | Render a Stanford Dragon with 871306 triangles | 60 FPS |
+
 ### Convention
 
 The graphics library uses the following conventions:
