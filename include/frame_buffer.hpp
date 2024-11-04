@@ -42,8 +42,8 @@ class FrameBuffer {
       int x, int y, int width, int height, const Color &color);
 
   // Method to draw a triangle on the display
-  void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,
-      const Color &color);
+  void drawTriangle(
+      int x1, int y1, int x2, int y2, int x3, int y3, const Color &color);
 
   const std::vector<uint32_t> &getData() const { return buffer; }
 };
