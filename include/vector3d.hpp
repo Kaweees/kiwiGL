@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cmath>
-#include <iostream>
 
+#include "../include/constants.hpp"
 #include "../include/vector2d.hpp"
 
 using std::sqrt;
@@ -26,24 +26,51 @@ class Vector3D {
   double z;
 
   // Project the vector onto a 2D plane
-  Vector2D project() const;
+  Vector2D project() const { return Vector2D((x * FOV) / z, (y * FOV) / z); }
 
   // Translate the vector
-  void translate(double x, double y, double z);
+  void translate(double x, double y, double z) {
+    this->x += x;
+    this->y += y;
+    this->z += z;
+  }
 
   // Scale the vector
-  void scale(double x, double y, double z);
+  void scale(double x, double y, double z) {
+    this->x *= x;
+    this->y *= y;
+    this->z *= z;
+  }
 
   // Rotate the vector
-  void rotate(double roll, double pitch, double yaw);
+  void rotate(double roll, double pitch, double yaw) {
+    rotateX(roll);
+    rotateY(pitch);
+    rotateZ(yaw);
+  }
 
   // Rotate the vector around the x-axis (roll)
-  void rotateX(double theta);
+  void rotateX(double theta) {
+    double y_new = y * cos(theta) - z * sin(theta);
+    double z_new = y * sin(theta) + z * cos(theta);
+    y = y_new;
+    z = z_new;
+  }
 
   // Rotate the vector around the y-axis (pitch)
-  void rotateY(double theta);
+  void rotateY(double theta) {
+    double x_new = x * cos(theta) - z * sin(theta);
+    double z_new = x * sin(theta) + z * cos(theta);
+    x = x_new;
+    z = z_new;
+  }
 
   // Rotate the vector around the z-axis (yaw)
-  void rotateZ(double theta);
+  void rotateZ(double theta) {
+    double x_new = x * cos(theta) - y * sin(theta);
+    double y_new = x * sin(theta) + y * cos(theta);
+    x = x_new;
+    y = y_new;
+  }
 };
 }  // namespace graphics

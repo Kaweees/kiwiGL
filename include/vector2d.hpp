@@ -19,30 +19,10 @@ class Vector2D {
   // The y-coordinate of the vector
   double y;
 
-  // Overload the addition operator
-  Vector2D operator+(const Vector2D& vec) const {
-    return Vector2D(this->x + vec.x, this->y + vec.y);
+  // Translate the vector
+  void translate(double x, double y) {
+    this->x += x;
+    this->y += y;
   }
-
-  // Overload the subtraction operator
-  Vector2D operator-(const Vector2D& vec) const {
-    return Vector2D(this->x - vec.x, this->y - vec.y);
-  }
-
-  // Overload the multiplication operator (vector * scalar)
-  Vector2D operator*(double t) const {
-    return Vector2D(this->x * t, this->y * t);
-  }
-
-  // Get the magnitude of the vector
-  double magnitude() const { return sqrt(x * x + y * y); }
-
-  // Get the unit vector of a vector
-  Vector2D unit_vector() const { return *this * (1.0 / magnitude()); }
 };
-
-// Overload the standard output stream insertion operator
-inline std::ostream& operator<<(std::ostream& out, const Vector2D& vec) {
-  return out << vec.x << ' ' << vec.y;
-}
 }  // namespace graphics
