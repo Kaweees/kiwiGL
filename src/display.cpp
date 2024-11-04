@@ -221,6 +221,10 @@ void Display::processInput() {
     switch (event.type) {
       case SDL_KEYDOWN:
         keyPressed = event.key.keysym.sym;
+        // Reset rotation speeds when space is pressed
+        if (keyPressed == SDLK_SPACE) {
+          rotationSpeed = Vector3D(0, 0, 0);
+        }
         break;
       default:
         keyPressed = SDLK_UNKNOWN;
