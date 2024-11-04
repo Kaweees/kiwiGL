@@ -1,12 +1,15 @@
 #pragma once
+#include "../include/vector2d.hpp"
 
+namespace graphics {
 class Triangle {
   public:
-  Triangle(int v1, int v2, int v3) : vertexIndices{v1, v2, v3} {}
+  // Constructor to initialize memory
+  Triangle() = default;
 
-  // Method to get vertex indices
-  const int* getVertexIndices() const { return vertexIndices; }
+  // Destructor to free the memory allocated
+  ~Triangle() = default;
 
-  private:
-  int vertexIndices[3];  // Indices of the vertices that form the triangle
+  Vector2D points[3];
 };
+}  // namespace graphics
