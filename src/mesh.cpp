@@ -10,11 +10,16 @@ namespace graphics {
 
 Mesh::Mesh() {}
 
+void Mesh::loadMesh(const std::string& filename) {
+  loadOBJ(filename);
+  // loadTexture(filename);
+}
+
 bool Mesh::loadOBJ(const std::string& filename) {
   std::ifstream file(filename, std::ios::binary);
   if (file.is_open()) {
     std::string line;
-    while (std::getline(file, line)) {
+    while (std::getline(file, line) && !file.eof()) {
       if (line.find("v ") != std::string::npos) {
         // Parse the vertex
         Vector3D vertex;

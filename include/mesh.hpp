@@ -16,6 +16,9 @@ class Mesh {
   // Destructor to free the memory allocated
   ~Mesh() = default;
 
+  // Method to load a mesh from a file
+  void loadMesh(const std::string& filename);
+
   // Method to load textures from a Wavefront .obj file
   bool loadOBJ(const std::string& filename);
 
@@ -38,7 +41,6 @@ class Mesh {
   void addFace(int v1, int v2, int v3, const Texture2D& t1, const Texture2D& t2,
       const Texture2D& t3, const Color& color);
 
-  private:
   std::vector<Vector3D> vertices;
   std::vector<Face> faces;
   std::vector<Texture2D> textures;

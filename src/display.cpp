@@ -1,6 +1,7 @@
 #include "../include/display.hpp"
 
 #include "../include/constants.hpp"
+#include "../include/mesh.hpp"
 
 #ifdef USE_CUDA
 #include "../include/display.cuh"
@@ -54,23 +55,13 @@ Display::Display(uint32_t numOfFrames) {
   d_vertices = nullptr;
   d_projectedVertices = nullptr;
 
-  int numVertices = 0;
+  mesh = Mesh();
+  mesh.loadMesh("assets/f22.obj");
 
-  // Initialize the vertices
-  // Start loading my array of vectors
-  // From -1 to 1 (in this 9x9x9 cube)
-  for (float x = -1; x <= 1; x += 0.25) {
-    for (float y = -1; y <= 1; y += 0.25) {
-      for (float z = -1; z <= 1; z += 0.25) {
-        if (numVertices >= NUM_VERTICES) {
-          break;
-        }
-        vertices.push_back(Vector3D(x, y, z));
-        numVertices++;
-      }
-    }
-  }
-  projectedVertices.resize(vertices.size());
+  int numVertices = 0;
+  int numFaces = 0;
+
+  projectedTriangles.resize(mesh.faces.size());
 
 #ifdef USE_CUDA
   InitalizeCuda();
@@ -135,8 +126,7 @@ Display::~Display() {
 
 void Display::update() {
 #ifndef BENCHMARK_MODE
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-    ;
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
   prevTime = SDL_GetTicks();
 #endif
 
@@ -145,21 +135,29 @@ void Display::update() {
 #elif USE_METAL
   LaunchMetal();
 #else
-  for (int i = 0; i < vertices.size(); i++) {
-    // Transform the vertices
-    auto vertex = vertices[i];
+  for (int i = 0; i < mesh.faces.size(); i++) {
+    // Transform the vertices of the face
+    auto face = mesh.faces[i];
+    for (int j = 0; j < 3; j++) {
+      // Transform the vertices
+      auto vertex = mesh.vertices[face.vertexIndices[j] - 1];
 
-    // Rotate the vertices
-    vertex.rotate(rotation.x, rotation.y, rotation.z);
+      // Rotate the vertices
+      vertex.rotate(rotation.x, rotation.y, rotation.z);
 
-    // Translate the vertices
-    vertex.translate(camera.x, camera.y, -camera.z);
+      // Translate the vertices
+      vertex.translate(camera.x, camera.y, -camera.z);
 
-    // Scale the vertices
-    vertex.scale(1.01, 1.01, 1.01);
+      // Scale the vertices
+      vertex.scale(1.01, 1.01, 1.01);
 
-    // Project the transformed vertices
-    projectedVertices[i] = vertex.project();
+      // Project the transformed vertices
+      projectedTriangles[i].points[j] = vertex.project();
+
+      // Translate the projected vertices to the center of the screen
+      projectedTriangles[i].points[j].translate(
+          frameBuffer->getWidth() / 2, frameBuffer->getHeight() / 2);
+    }
   }
 #endif
 #ifndef BENCHMARK_MODE
@@ -193,9 +191,18 @@ void Display::render() {
 
   // frameBuffer->drawGrid(Color(0xFF444444));
 
-  for (auto &vertex : projectedVertices) {
-    frameBuffer->drawFilledRectangle(vertex.x + (frameBuffer->getWidth() / 2),
-        vertex.y + (frameBuffer->getHeight() / 2), 4, 4, Color(0xFFFFFF00));
+  for (auto &triangle : projectedTriangles) {
+    for (int i = 0; i < 3; i++) {
+      // Draw vertex points
+      frameBuffer->drawFilledRectangle(
+          triangle.points[i].x, triangle.points[i].y, 3, 3, Color(0xFFFFFF00));
+      // Draw lines between points
+      if (i < 2) {
+        frameBuffer->drawLine(triangle.points[i].x, triangle.points[i].y,
+            triangle.points[i + 1].x, triangle.points[i + 1].y,
+            Color(0xFFFFFF00));
+      }
+    }
   }
 
 #ifndef BENCHMARK_MODE

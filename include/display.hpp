@@ -7,10 +7,22 @@
 #include <memory>
 
 #include "../include/frame_buffer.hpp"
-#include "../include/mesh.hpp"  // Add this line
+#include "../include/mesh.hpp"
+#include "../include/triangle.hpp"
 #include "../include/vector3d.hpp"
 
 namespace graphics {
+// An enum to represent the various methods to render the display
+enum RenderMethod {
+  RENDER_WIRE,
+  RENDER_WIRE_VERTEX,
+  RENDER_FILL_TRIANGLE,
+  RENDER_FILL_TRIANGLE_WIRE,
+  RENDER_TEXTURED,
+  RENDER_TEXTURED_WIRE
+};
+
+// Represents a display
 class Display {
   private:
   // Constants for display
@@ -24,21 +36,20 @@ class Display {
   SDL_Renderer *renderer;
   SDL_Keycode keyPressed;
   uint32_t prevTime;
+  RenderMethod renderMethod;
 #else
   uint32_t count;
   uint32_t frameCount;
 #endif
   std::unique_ptr<FrameBuffer> frameBuffer;
-  std::vector<Vector3D> vertices;
-  std::vector<Vector2D> projectedVertices;
+  Mesh mesh;
+  std::vector<Triangle> projectedTriangles;
   Vector3D *d_vertices;
   Vector2D *d_projectedVertices;
 
   Vector3D camera;
   Vector3D rotation;
   Vector3D rotationSpeed;
-
-  Mesh mesh;  // Add a mesh member
 
   public:
 #ifndef BENCHMARK_MODE
