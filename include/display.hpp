@@ -44,8 +44,9 @@ class Display {
   std::unique_ptr<FrameBuffer> frameBuffer;
   Mesh mesh;
   std::vector<Triangle> projectedTriangles;
+  Face *d_faces;
   Vector3D *d_vertices;
-  Vector2D *d_projectedVertices;
+  Triangle *d_projectedTriangles;
 
   Vector3D camera;
   Vector3D rotation;
@@ -85,7 +86,7 @@ class Display {
   virtual void FreeCuda();
 
   // Method to launch CUDA
-  virtual void LaunchCuda();
+  virtual void LaunchCuda(int width, int height);
 #elif USE_METAL
   // Method to initialize Metal
   virtual void InitalizeMetal();

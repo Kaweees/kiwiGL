@@ -44,15 +44,20 @@ __device__ __host__ void cudaScale(Vector3D* vertex, double x, double y, double 
     vertex->z *= z;
 }
 
-__device__ __host__ void cudaProject(const Vector3D* vertex, Vector2D* projectedVertex) {
+__device__ __host__ void cudaProject(const Vector3D* vertex, Triangle* projectedVertex) {
     projectedVertex->x = (vertex->x * FOV) / vertex->z;
     projectedVertex->y = (vertex->y * FOV) / vertex->z;
 }
 
-__global__ void transformVerticesKernel(Vector3D* vertices, Vector2D* projectedVertices, int size, Vector3D rotation, Vector3D camera) {
+__global__ void transformVerticesKernel(Face* faces, Vector3D* vertices, Triangle* projectedTriangles, Vector3D rotation, Vector3D camera, int width, int height, int numFaces) {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (idx < size) {
-        Vector3D vertex = vertices[idx];
+    if (idx >= numFaces) return;
+
+    // Process one face per thread
+    Face face = faces[idx];
+    for (int j = 0; j < 3; j++) {
+        // Transform the vertices
+        Vector3D vertex = vertices[face.vertexIndices[j] - 1];
 
         // Rotate the vertex
         cudaRotate(&vertex, rotation.x, rotation.y, rotation.z);
@@ -64,42 +69,52 @@ __global__ void transformVerticesKernel(Vector3D* vertices, Vector2D* projectedV
         cudaScale(&vertex, 1.01, 1.01, 1.01);
 
         // Project the transformed vertex
-        cudaProject(&vertex, &projectedVertices[idx]);
+        cudaProject(&vertex, &projectedTriangles[idx]);
+
+        // Translate the projected vertices to the center of the screen
+        projectedTriangles[idx].points[j].translate(width / 2, height / 2);
     }
 }
+
 void Display::InitalizeCuda() {
     // Allocate memory on the device
-    cudaMalloc((void**)&d_vertices, NUM_VERTICES * sizeof(Vector3D));
-    cudaMalloc((void**)&d_projectedVertices, NUM_VERTICES * sizeof(Vector2D));
-    if (d_vertices == nullptr || d_projectedVertices == nullptr) {
+    cudaMalloc((void**)&d_faces, mesh.faces.size() * sizeof(Face));
+    cudaMalloc((void**)&d_vertices, mesh.vertices.size() * sizeof(Vector3D));
+    cudaMalloc((void**)&d_projectedTriangles, mesh.faces.size() * sizeof(Triangle));
+    if (d_faces == nullptr || d_projectedTriangles == nullptr) {
         fprintf(stderr, "Failed to allocate memory on the device.\n");
         exit(EXIT_FAILURE);
     }
 }
 void Display::FreeCuda() {
+    if (d_faces != nullptr) {
+        cudaFree(d_faces);
+        d_faces = nullptr;
+    }
     if (d_vertices != nullptr) {
         cudaFree(d_vertices);
         d_vertices = nullptr;
     }
-    if (d_projectedVertices != nullptr) {
-        cudaFree(d_projectedVertices);
-        d_projectedVertices = nullptr;
+    if (d_projectedTriangles != nullptr) {
+        cudaFree(d_projectedTriangles);
+        d_projectedTriangles = nullptr;
     }
 }
-void Display::LaunchCuda() {
-    // Copy vertices to device
-    cudaMemcpy(d_vertices, vertices.data(), NUM_VERTICES * sizeof(Vector3D), cudaMemcpyHostToDevice);
+void Display::LaunchCuda(int width, int height) {
+    // Copy faces to device
+    cudaMemcpy(d_faces, mesh.faces.data(), mesh.faces.size() * sizeof(Face), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_vertices, mesh.vertices.data(), mesh.vertices.size() * sizeof(Vector3D), cudaMemcpyHostToDevice);
 
     // Launch kernel
     int threadsPerBlock = 256;
-    int blocksPerGrid = (NUM_VERTICES + threadsPerBlock - 1) / threadsPerBlock;
-    transformVerticesKernel<<<blocksPerGrid, threadsPerBlock>>>(d_vertices, d_projectedVertices, NUM_VERTICES, rotation, camera);
-
-    // Copy projected vertices back to host
-    cudaMemcpy(projectedVertices.data(), d_projectedVertices, NUM_VERTICES * sizeof(Vector2D), cudaMemcpyDeviceToHost);
+    int blocksPerGrid = (mesh.faces.size() + threadsPerBlock - 1) / threadsPerBlock;
+    transformVerticesKernel<<<blocksPerGrid, threadsPerBlock>>>(d_faces, d_vertices, d_projectedTriangles, rotation, camera, width, height, mesh.faces.size());
 
     // Synchronize to ensure all operations are complete
     cudaDeviceSynchronize();
+
+    // Copy projected triangles back to host
+    cudaMemcpy(projectedTriangles.data(), d_projectedTriangles, mesh.faces.size() * sizeof(Triangle), cudaMemcpyDeviceToHost);
 
     // Check for CUDA errors
     cudaError_t cudaStatus = cudaGetLastError();

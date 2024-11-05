@@ -90,7 +90,7 @@ The graphics library is capable of rendering 3D scenes with thousands of triangl
 
 The graphics library uses the following conventions:
 - [left-handed coordinate system](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/coordinate-systems.html#:~:text=The%20differentiation%20between%20left%2Dhanded,a%20right%2Dhand%20coordinate%20system)
-- counter-clockwise winding order
+- counter-clockwise winding order for triangle vertices
 
 
 ### Keyboard Controls

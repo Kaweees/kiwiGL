@@ -52,14 +52,14 @@ Display::Display(uint32_t numOfFrames) {
   // Initialize the frame buffer
   frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
+  // Initialize the CUDA device pointers
+  d_faces = nullptr;
   d_vertices = nullptr;
-  d_projectedVertices = nullptr;
+  d_projectedTriangles = nullptr;
 
+  // Initialize the mesh
   mesh = Mesh();
   mesh.loadMesh("assets/f22.obj");
-
-  int numVertices = 0;
-  int numFaces = 0;
 
   projectedTriangles.resize(mesh.faces.size());
 
@@ -126,22 +126,21 @@ Display::~Display() {
 
 void Display::update() {
 #ifndef BENCHMARK_MODE
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-    ;
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
   prevTime = SDL_GetTicks();
 #endif
 
 #ifdef USE_CUDA
-  LaunchCuda();
+  LaunchCuda(frameBuffer->getWidth(), frameBuffer->getHeight());
 #elif USE_METAL
   LaunchMetal();
 #else
   for (int i = 0; i < mesh.faces.size(); i++) {
     // Transform the vertices of the face
-    auto face = mesh.faces[i];
+    Face face = mesh.faces[i];
     for (int j = 0; j < 3; j++) {
       // Transform the vertices
-      auto vertex = mesh.vertices[face.vertexIndices[j] - 1];
+      Vector3D vertex = mesh.vertices[face.vertexIndices[j] - 1];
 
       // Rotate the vertices
       vertex.rotate(rotation.x, rotation.y, rotation.z);
