@@ -11,10 +11,10 @@
 
 #include <SDL2/SDL.h>
 
+#include <string>
+
 #include "../include/constants.hpp"
 #include "../include/vector3d.hpp"
-
-#include <string>
 
 namespace graphics {
 #ifndef BENCHMARK_MODE

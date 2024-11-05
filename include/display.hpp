@@ -32,7 +32,6 @@ class Display {
   SDL_Window *window;
   SDL_Texture *texture;
   SDL_Surface *surface;
-  SDL_Event *event;
   SDL_Renderer *renderer;
   SDL_Keycode keyPressed;
   uint32_t prevTime;
