@@ -5,6 +5,7 @@
 #include "../include/face.hpp"
 #include "../include/texture.hpp"
 #include "../include/vector3d.hpp"
+#include <string>
 
 namespace graphics {
 

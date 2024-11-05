@@ -32,10 +32,15 @@ __device__ __host__ void cudaRotate(Vector3D* vertex, double roll, double pitch,
     vertex->y = y * cosY + x * sinY;
 }
 
-__device__ __host__ void cudaTranslate(Vector3D* vertex, double x, double y, double z) {
+__device__ __host__ void cudaTranslate3D(Vector3D* vertex, double x, double y, double z) {
     vertex->x += x;
     vertex->y += y;
     vertex->z += z;
+}
+
+__device__ __host__ void cudaTranslate2D(Vector2D* vertex, double x, double y) {
+    vertex->x += x;
+    vertex->y += y;
 }
 
 __device__ __host__ void cudaScale(Vector3D* vertex, double x, double y, double z) {
@@ -44,7 +49,7 @@ __device__ __host__ void cudaScale(Vector3D* vertex, double x, double y, double 
     vertex->z *= z;
 }
 
-__device__ __host__ void cudaProject(const Vector3D* vertex, Triangle* projectedVertex) {
+__device__ __host__ void cudaProject(const Vector3D* vertex, Vector2D* projectedVertex) {
     projectedVertex->x = (vertex->x * FOV) / vertex->z;
     projectedVertex->y = (vertex->y * FOV) / vertex->z;
 }
@@ -63,16 +68,16 @@ __global__ void transformVerticesKernel(Face* faces, Vector3D* vertices, Triangl
         cudaRotate(&vertex, rotation.x, rotation.y, rotation.z);
 
         // Translate the vertex
-        cudaTranslate(&vertex, camera.x, camera.y, -camera.z);
+        cudaTranslate3D(&vertex, camera.x, camera.y, -camera.z);
 
         // Scale the vertex
         cudaScale(&vertex, 1.01, 1.01, 1.01);
 
         // Project the transformed vertex
-        cudaProject(&vertex, &projectedTriangles[idx]);
+        cudaProject(&vertex, &projectedTriangles[idx].points[j]);
 
         // Translate the projected vertices to the center of the screen
-        projectedTriangles[idx].points[j].translate(width / 2, height / 2);
+        cudaTranslate2D(&projectedTriangles[idx].points[j], width / 2, height / 2);
     }
 }
 

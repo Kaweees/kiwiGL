@@ -14,6 +14,8 @@
 #include "../include/constants.hpp"
 #include "../include/vector3d.hpp"
 
+#include <string>
+
 namespace graphics {
 #ifndef BENCHMARK_MODE
 // Constructor to initialize memory
@@ -59,7 +61,7 @@ Display::Display(uint32_t numOfFrames) {
 
   // Initialize the mesh
   mesh = Mesh();
-  mesh.loadMesh("assets/f22.obj");
+  mesh.loadMesh(std::string("assets/f22.obj"));
 
   projectedTriangles.resize(mesh.faces.size());
 
