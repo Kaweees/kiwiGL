@@ -2,6 +2,7 @@
 #include "../include/constants.hpp"
 
 #include <cuda_runtime.h>
+#include <cuda.h>
 #include <device_launch_parameters.h>
 #include "../include/display.hpp"
 
@@ -83,11 +84,19 @@ __global__ void transformVerticesKernel(Face* faces, Vector3D* vertices, Triangl
 
 void Display::InitalizeCuda() {
     // Allocate memory on the device
-    cudaMalloc((void**)&d_faces, mesh.faces.size() * sizeof(Face));
-    cudaMalloc((void**)&d_vertices, mesh.vertices.size() * sizeof(Vector3D));
-    cudaMalloc((void**)&d_projectedTriangles, mesh.faces.size() * sizeof(Triangle));
-    if (d_faces == nullptr || d_projectedTriangles == nullptr) {
-        fprintf(stderr, "Failed to allocate memory on the device.\n");
+    cudaError_t err = cudaMalloc((void**)&d_faces, mesh.faces.size() * sizeof(Face)); 
+    if (err != cudaSuccess) {
+        fprintf(stderr, "%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
+        exit(EXIT_FAILURE);
+    }
+    err = cudaMalloc((void**)&d_vertices, mesh.vertices.size() * sizeof(Vector3D));
+    if (err != cudaSuccess) {
+        fprintf(stderr, "%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
+        exit(EXIT_FAILURE);
+    }
+    err = cudaMalloc((void**)&d_projectedTriangles, mesh.faces.size() * sizeof(Triangle));
+    if (err != cudaSuccess) {
+        fprintf(stderr, "%s in %s at line %d\n", cudaGetErrorString(err), __FILE__, __LINE__);
         exit(EXIT_FAILURE);
     }
 }
@@ -112,7 +121,7 @@ void Display::LaunchCuda(int width, int height) {
 
     // Launch kernel
     int threadsPerBlock = 256;
-    int blocksPerGrid = (mesh.faces.size() + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = ceil((float)mesh.faces.size() / threadsPerBlock);
     transformVerticesKernel<<<blocksPerGrid, threadsPerBlock>>>(d_faces, d_vertices, d_projectedTriangles, rotation, camera, width, height, mesh.faces.size());
 
     // Synchronize to ensure all operations are complete
