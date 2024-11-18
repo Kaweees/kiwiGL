@@ -120,8 +120,8 @@ void Display::LaunchCuda(int width, int height) {
     cudaMemcpy(d_vertices, mesh.vertices.data(), mesh.vertices.size() * sizeof(Vector3D), cudaMemcpyHostToDevice);
 
     // Launch kernel
-    int threadsPerBlock = 256;
-    int blocksPerGrid = ceil((float)mesh.faces.size() / threadsPerBlock);
+    dim3 threadsPerBlock(256, 1, 1);
+    dim3 blocksPerGrid((mesh.faces.size() + threadsPerBlock.x - 1) / threadsPerBlock.x, 1, 1);
     transformVerticesKernel<<<blocksPerGrid, threadsPerBlock>>>(d_faces, d_vertices, d_projectedTriangles, rotation, camera, width, height, mesh.faces.size());
 
     // Synchronize to ensure all operations are complete
@@ -133,7 +133,8 @@ void Display::LaunchCuda(int width, int height) {
     // Check for CUDA errors
     cudaError_t cudaStatus = cudaGetLastError();
     if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "CUDA error: %s\n", cudaGetErrorString(cudaStatus));
+        fprintf(stderr, "%s in %s at line %d\n", cudaGetErrorString(cudaStatus), __FILE__, __LINE__);
+        exit(EXIT_FAILURE);
     }
 }
 } // namespace graphics
