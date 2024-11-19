@@ -53,7 +53,7 @@ A three-dimensional graphics library from scratch written in C++13 and accelerat
 
 ### Prerequisites
 
-Before attempting to build this project, make sure you have [Simple DirectMedia Layer (SDL 2)](https://wiki.libsdl.org/SDL2/Installation), [GNU Make](https://www.gnu.org/software/make/), and [CMake](https://cmake.org) installed on your machine.
+Before attempting to build this project, make sure you have [Simple DirectMedia Layer (SDL 2)](https://wiki.libsdl.org/SDL2/Installation), [GNU Make](https://www.gnu.org/software/make/), and [CMake](https://cmake.org) installed on your machine, unless you are on windows then everything should be provided in the project.
 
 
 ### Installation
@@ -69,7 +69,11 @@ To get a local copy of the project up and running on your machine, follow these 
 
 2. Build and execute the project
    ```sh
+   --- With cmake
    clear && cmake CMakeLists.txt && make && ./target/release/kiwigl
+   
+   --- With premake
+   run build.bat and open the generated project
    ```
 
 ## Usage
@@ -107,13 +111,16 @@ To interact with the graphics library, use the following keyboard shortcuts:
 
 ```sh
 graphics/
-├── .github/                       - GitHub Actions CI/CD workflows
-├── include/                       - project header files
-├── src/                           - project source files
-│   └── main.c                     - Entry point, main function
-├── CMakeLists.txt                 - CMake build script
-├── LICENSE                        - project license
-└── README.md                      - you are here
+├──── .github/                       - GitHub Actions CI/CD workflows
+├──── kiwi/                          - All project files
+│   └── include/                     - Project header files
+│   └── src/                         - Project source files
+│   └── main.cpp                     - Entry point, main function
+├──── vendor/                        - Libraries used with premake building
+├──── CMakeLists.txt                 - CMake build script
+├──── premake5.lua                   - Premake build script
+├──── LICENSE                        - Project license
+└──── README.md                      - You are here!
 ```
 
 ## License

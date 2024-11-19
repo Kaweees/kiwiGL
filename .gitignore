@@ -66,3 +66,7 @@ CMakeSettings.json
 .cache/
 target/
 build/
+bin/
+bin-int/
+.vs/
+README.md.backup
