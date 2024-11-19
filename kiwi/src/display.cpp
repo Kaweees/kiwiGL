@@ -9,7 +9,7 @@
 #include "../include/display.metal"
 #endif
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include <string>
 

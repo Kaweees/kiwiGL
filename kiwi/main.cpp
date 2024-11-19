@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "../include/display.hpp"
+#include "../kiwi/include/display.hpp"
 
 #ifdef USE_METAL
 #include <cassert>

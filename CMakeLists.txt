@@ -41,10 +41,10 @@ if(NOT CUDA_FOUND AND APPLE)
 endif()
 
 # Adding our source files
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/src/*.c" "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/src/*.cc" "${CMAKE_CURRENT_LIST_DIR}/src/*.cxx" "${CMAKE_CURRENT_LIST_DIR}/src/*.cu") # Define PROJECT_SOURCES as a list of all source files
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/kiwi/src/*.c" "${CMAKE_CURRENT_LIST_DIR}/kiwi/src/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/kiwi/*.cpp" "${CMAKE_CURRENT_LIST_DIR}/kiwi/src/*.cxx" "${CMAKE_CURRENT_LIST_DIR}/kiwi/src/*.cu") # Define PROJECT_SOURCES as a list of all source files
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 # Adding our include files
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/kiwi/include)
 
 # Setting ASSETS_PATH
 target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/") # Set the asset path macro to the absolute path on the dev machine
