@@ -66,72 +66,144 @@ class Display {
   // Constructor to initialize memory
   Display() {
 #else
-  Display::Display(uint32_t numOfFrames) {
+  Display(uint32_t numOfFrames) {
 #endif
     // Initialize the camera
     camera = Vector3D(0, 0, -5);
     rotation = Vector3D(0, 0, 0);
     rotationSpeed = Vector3D(0, 0, 0);
-  }
-
 #ifndef BENCHMARK_MODE
-  fullScreen = true;
-  keyPressed = SDLK_UNKNOWN;
-  prevTime = SDL_GetTicks();
-  // Initialize SDL
-  if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-    fprintf(
-        stderr, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
-  }
+    fullScreen = true;
+    keyPressed = SDLK_UNKNOWN;
+    prevTime = SDL_GetTicks();
+    // Initialize SDL
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+      fprintf(
+          stderr, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+      exit(EXIT_FAILURE);
+    }
 
-  // Query SDL for the display mode
-  if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
-    fprintf(stderr, "SDL_GetCurrentDisplayMode failed: %s\n", SDL_GetError());
-    exit(EXIT_FAILURE);
-  }
-
-  // Set the blend mode
-  SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+    // Query SDL for the display mode
+    if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
+      fprintf(stderr, "SDL_GetCurrentDisplayMode failed: %s\n", SDL_GetError());
+      exit(EXIT_FAILURE);
+    }
+#else
+    count = 0;
+    frameCount = numOfFrames;
 #endif
-}
 
-// Destructor to free memory
-~Display() {
-  // Free the frame buffer
-  frameBuffer.reset();
+    // Initialize the frame buffer
+    frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
-  // Free the window
-#ifndef BENCHMARK_MODE
-  SDL_DestroyWindow(window);
-  window = nullptr;
+    // Initialize the frame buffer
+    frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
-  // Free the renderer
-  SDL_DestroyRenderer(renderer);
+    // Initialize the CUDA device pointers
+    d_faces = nullptr;
+    d_vertices = nullptr;
+    d_projectedTriangles = nullptr;
 
-  // Free the texture
-  SDL_DestroyTexture(texture);
-  texture = nullptr;
+    // Initialize the mesh
+    mesh = Mesh();
+    mesh.loadMesh(std::string("assets/f22.obj"));
 
-  // Quit SDL subsystems
-  SDL_Quit();
+    projectedTriangles.resize(mesh.faces.size());
+
+#ifdef USE_CUDA
+    InitalizeCuda();
+#elif USE_METAL
+    InitalizeMetal();
 #endif
-}
 
-// Method to process input
-void processInput();
-
-// Method to update the display
-void update() {
 #ifndef BENCHMARK_MODE
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
-  prevTime = SDL_GetTicks();
+    // Initialize the SDL window
+    window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
+        frameBuffer->getHeight(),
+        fullScreen ? SDL_WINDOW_BORDERLESS : SDL_WINDOW_SHOWN);
+    if (window == nullptr) {
+      fprintf(stderr, "Window could not be created! SDL_Error: %s\n",
+          SDL_GetError());
+      exit(EXIT_FAILURE);
+    }
+
+    // Initialize the SDL renderer
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == nullptr) {
+      fprintf(stderr, "Renderer could not be created! SDL_Error: %s\n",
+          SDL_GetError());
+      exit(EXIT_FAILURE);
+    }
+
+    // Initialize the SDL texture
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_STREAMING, frameBuffer->getWidth(),
+        frameBuffer->getHeight());
+    if (texture == nullptr) {
+      fprintf(stderr, "Texture could not be created! SDL_Error: %s\n",
+          SDL_GetError());
+      exit(EXIT_FAILURE);
+    }
+
+    // Set the blend mode
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+#endif
+  }
+
+  // Destructor to free memory
+  ~Display() {
+    // Free the frame buffer
+    frameBuffer.reset();
+
+    // Free the window
+#ifndef BENCHMARK_MODE
+    SDL_DestroyWindow(window);
+    window = nullptr;
+
+    // Free the renderer
+    SDL_DestroyRenderer(renderer);
+
+    // Free the texture
+    SDL_DestroyTexture(texture);
+    texture = nullptr;
+
+    // Quit SDL subsystems
+    SDL_Quit();
+#endif
+  }
+
+  // Method to process input
+  void processInput() {
+#ifndef BENCHMARK_MODE
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+      switch (event.type) {
+        case SDL_KEYDOWN:
+          keyPressed = event.key.keysym.sym;
+          // Reset rotation speeds when space is pressed
+          if (keyPressed == SDLK_SPACE) {
+            rotationSpeed = Vector3D(0, 0, 0);
+          }
+          break;
+        default:
+          keyPressed = SDLK_UNKNOWN;
+      }
+    }
+#endif
+  }
+
+  // Method to update the display
+  void update() {
+#ifndef BENCHMARK_MODE
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
+    prevTime = SDL_GetTicks();
 #endif
 
 #ifdef USE_CUDA
-  LaunchCuda(frameBuffer->getWidth(), frameBuffer->getHeight());
+    LaunchCuda(frameBuffer->getWidth(), frameBuffer->getHeight());
 #elif USE_METAL
-  LaunchMetal();
+    LaunchMetal();
 #else
   for (int i = 0; i < mesh.faces.size(); i++) {
     // Transform the vertices of the face
@@ -159,99 +231,99 @@ void update() {
   }
 #endif
 #ifndef BENCHMARK_MODE
-  // Update rotation
-  switch (keyPressed) {
-    case SDLK_UP:
-      rotationSpeed.x += 0.01;
-      break;
-    case SDLK_DOWN:
-      rotationSpeed.x -= 0.01;
-      break;
-    case SDLK_LEFT:
-      rotationSpeed.y += 0.01;
-      break;
-    case SDLK_RIGHT:
-      rotationSpeed.y -= 0.01;
-      break;
-    default:
-      break;
-  }
-  rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
-#endif
-}
-
-// Method to render the display
-void render() {
-  // Clear the renderer
-  clear();
-
-  frameBuffer->drawGrid(Color(0xFF444444));
-
-  for (auto &triangle : projectedTriangles) {
-    for (int i = 0; i < 3; i++) {
-      // Draw vertex points
-      frameBuffer->drawFilledRectangle(
-          triangle.points[i].x, triangle.points[i].y, 3, 3, Color(0xFFFFFF00));
+    // Update rotation
+    switch (keyPressed) {
+      case SDLK_UP:
+        rotationSpeed.x += 0.01;
+        break;
+      case SDLK_DOWN:
+        rotationSpeed.x -= 0.01;
+        break;
+      case SDLK_LEFT:
+        rotationSpeed.y += 0.01;
+        break;
+      case SDLK_RIGHT:
+        rotationSpeed.y -= 0.01;
+        break;
+      default:
+        break;
     }
-    // Draw triangle
-    frameBuffer->drawTriangle(triangle.points[0].x, triangle.points[0].y,
-        triangle.points[1].x, triangle.points[1].y, triangle.points[2].x,
-        triangle.points[2].y, Color(0xFFFFFF00));
+    rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
+#endif
   }
 
+  // Method to render the display
+  void render() {
+    // Clear the renderer
+    clear();
+
+    frameBuffer->drawGrid(Color(0xFF444444));
+
+    for (auto &triangle : projectedTriangles) {
+      for (int i = 0; i < 3; i++) {
+        // Draw vertex points
+        frameBuffer->drawFilledRectangle(triangle.points[i].x,
+            triangle.points[i].y, 3, 3, Color(0xFFFFFF00));
+      }
+      // Draw triangle
+      frameBuffer->drawTriangle(triangle.points[0].x, triangle.points[0].y,
+          triangle.points[1].x, triangle.points[1].y, triangle.points[2].x,
+          triangle.points[2].y, Color(0xFFFFFF00));
+    }
+
 #ifndef BENCHMARK_MODE
-  // Update the texture with the frame buffer data
-  SDL_UpdateTexture(texture, nullptr, frameBuffer->getData().data(),
-      frameBuffer->getWidth() * sizeof(uint32_t));
+    // Update the texture with the frame buffer data
+    SDL_UpdateTexture(texture, nullptr, frameBuffer->getData().data(),
+        frameBuffer->getWidth() * sizeof(uint32_t));
 
-  // Copy the texture to the renderer
-  SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+    // Copy the texture to the renderer
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
 
-  // Present the renderer
-  SDL_RenderPresent(renderer);
+    // Present the renderer
+    SDL_RenderPresent(renderer);
 #endif
-}
+  }
 
-// Method to clear the display
-void clear() {
+  // Method to clear the display
+  void clear() {
 #ifndef BENCHMARK_MODE
-  // Clear the renderer
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-  SDL_RenderClear(renderer);
+    // Clear the renderer
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
 #endif
 
-  // Clear the frame buffer
-  frameBuffer->clear(Color(0, 0, 0, 0));
-}
+    // Clear the frame buffer
+    frameBuffer->clear(Color(0, 0, 0, 0));
+  }
 
-// Method to check if the display should close
-bool shouldClose() {
+  // Method to check if the display should close
+  bool shouldClose() {
 #ifndef BENCHMARK_MODE
-  return SDL_QuitRequested();
+    return SDL_QuitRequested();
 #else
-  count++;
-  return count >= frameCount;
+    count++;
+    return count >= frameCount;
 #endif
-}
+  }
 
 #ifdef USE_CUDA
-// Method to initialize CUDA
-virtual void InitalizeCuda();
+  // Method to initialize CUDA
+  virtual void InitalizeCuda();
 
-// Method to free CUDA
-virtual void FreeCuda();
+  // Method to free CUDA
+  virtual void FreeCuda();
 
-// Method to launch CUDA
-virtual void LaunchCuda(int width, int height);
+  // Method to launch CUDA
+  virtual void LaunchCuda(int width, int height);
 #elif USE_METAL
-// Method to initialize Metal
-virtual void InitalizeMetal();
+  // Method to initialize Metal
+  virtual void InitalizeMetal();
 
-// Method to free Metal
-virtual void FreeMetal();
+  // Method to free Metal
+  virtual void FreeMetal();
 
-// Method to launch Metal
-virtual void LaunchMetal();
+  // Method to launch Metal
+  virtual void LaunchMetal();
 #endif
 };
 }  // namespace kiwigl

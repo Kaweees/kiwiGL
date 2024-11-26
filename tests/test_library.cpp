@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <kiwitorch/kiwitorch.hpp>
-using namespace kiwitorch;
+#include <kiwigl/kiwigl.hpp>
+using namespace kiwigl;
 
 TEST(LibraryTest, Add) {
   // Consider adding more test cases
