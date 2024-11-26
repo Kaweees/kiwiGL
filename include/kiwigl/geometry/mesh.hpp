@@ -5,11 +5,11 @@
 #include <string>
 #include <vector>
 
-#include "color.hpp"
-#include "constants.hpp"
-#include "face.hpp"
-#include "texture.hpp"
-#include "vector.hpp"
+#include "../core/constants.hpp"
+#include "../geometry/face.hpp"
+#include "../geometry/vector.hpp"
+#include "../graphics/color.hpp"
+#include "../texture/texture.hpp"
 
 namespace kiwigl {
 

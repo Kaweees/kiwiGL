@@ -4,9 +4,9 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
-#include "constants.hpp"
-#include "display.cuh"
-#include "display.hpp"
+#include "../core/constants.hpp"
+#include "../geometry/face.hpp"
+#include "../geometry/vector.hpp"
 
 namespace kiwigl {
 __device__ __host__ void cudaRotate(

@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "color.hpp"
+#include "../graphics/color.hpp"
 
 namespace kiwigl {
 

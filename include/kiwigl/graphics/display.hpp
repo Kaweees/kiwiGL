@@ -7,13 +7,12 @@
 #include <stdlib.h>
 
 #include <memory>
-#include <string>
 
-#include "constants.hpp"
-#include "frame_buffer.hpp"
-#include "mesh.hpp"
-#include "triangle.hpp"
-#include "vector.hpp"
+#include "../core/constants.hpp"
+#include "../geometry/mesh.hpp"
+#include "../geometry/triangle.hpp"
+#include "../geometry/vector.hpp"
+#include "../graphics/frame_buffer.hpp"
 
 #ifdef USE_CUDA
 #include "display.cuh"
@@ -196,8 +195,7 @@ class Display {
   // Method to update the display
   void update() {
 #ifndef BENCHMARK_MODE
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-      ;
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
     prevTime = SDL_GetTicks();
 #endif
 
