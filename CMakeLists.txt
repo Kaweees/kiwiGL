@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR) # Set the minimum required version of CMake
 
-project(kiwitorch VERSION 1.0.0 LANGUAGES CXX)
+project(kiwigl VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
@@ -60,6 +60,15 @@ option(BENCHMARK "Build with benchmark mode" OFF)
 # Benchmark mode
 if(BENCHMARK)
     target_compile_definitions(${PROJECT_NAME} PRIVATE BENCHMARK_MODE)
+else()
+  # Find SDL2 package
+  find_package(SDL2 REQUIRED)
+
+  # Include SDL2 headers
+  include_directories(${SDL2_INCLUDE_DIRS})
+
+  # Link SDL2 libraries (corrected for INTERFACE library)
+  target_link_libraries(${PROJECT_NAME} INTERFACE ${SDL2_LIBRARIES})
 endif()
 
 # Examples
@@ -82,14 +91,3 @@ if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-# Benchmark
-if(NOT BENCHMARK)
-  # Find SDL2 package
-  find_package(SDL2 REQUIRED)
-
-  # Include SDL2 headers
-  include_directories(${SDL2_INCLUDE_DIRS})
-
-  # Link SDL2 libraries (add this to your target)
-  target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
-endif()

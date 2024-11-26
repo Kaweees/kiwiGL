@@ -2,7 +2,7 @@ enable_testing()
 
 set(
   TESTS
-  test_operators
+  test_library
 )
 
 foreach (name IN LISTS TESTS)

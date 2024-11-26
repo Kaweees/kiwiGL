@@ -9,7 +9,7 @@
 #include "constants.hpp"
 #include "face.hpp"
 #include "texture.hpp"
-#include "vector3d.hpp"
+#include "vector.hpp"
 
 namespace kiwigl {
 
@@ -52,7 +52,7 @@ class Mesh {
           if (sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &t1,
                   &n1, &v2, &t2, &n2, &v3, &t3, &n3) == 9) {
             addFace(v1, v2, v3, textures[t1 - 1], textures[t2 - 1],
-                textures[t3 - 1], Color::WHITE);
+                textures[t3 - 1], WHITE);
           }
         }
       }

@@ -29,7 +29,7 @@
 
 <!-- ABOUT THE PROJECT -->
 
-A three-dimensional graphics library from scratch written in C++13 and accelerated with CUDA/Apple Metal.
+A three-dimensional header-only graphics library written in C++13 and accelerated with CUDA/Apple Metal.
 
 ### Built With
 
@@ -55,6 +55,7 @@ A three-dimensional graphics library from scratch written in C++13 and accelerat
 
 Before attempting to build this project, make sure you have [Simple DirectMedia Layer (SDL 2)](https://wiki.libsdl.org/SDL2/Installation), [GNU Make](https://www.gnu.org/software/make/), and [CMake](https://cmake.org) installed on your machine.
 
+Additionally, if you wish to utilize the GPU acceleration features, you will need to have [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) or [Apple Metal](https://developer.apple.com/metal/cpp/) installed on your machine.
 
 ### Installation
 
@@ -67,13 +68,54 @@ To get a local copy of the project up and running on your machine, follow these 
    cd kiwigl
    ```
 
-2. Build and execute the project
+2. Create a fresh build directory and navigate to it
+
    ```sh
-   clear && cmake CMakeLists.txt && make && ./target/release/kiwigl
+   rm -rf build
+   mkdir build
+   cd build
+   ```
+
+3. Generate build files using CMake
+   ```sh
+   cmake -S .. -B . -DCMAKE_BUILD_TYPE=Debug
+   ```
+
+4. Build the entire project
+   ```sh
+   cmake --build .
+   ```
+
+### Building and Running Tests
+
+1. Build only the tests
+   ```sh
+   cmake --build . --target tests
+   ```
+
+2. Run all tests
+   ```sh
+   ctest --output-on-failure
+   ```
+
+3. Run a specific test suite
+   ```sh
+   ./tests/test_suite_name
+   ```
+
+### Building and Running Examples
+
+1. Build only the examples
+   ```sh
+   cmake --build . --target examples
+   ```
+
+2. Run a specific example
+   ```sh
+   ./examples/example_name
    ```
 
 ## Usage
-
 
 ### Benchmarks
 
@@ -100,7 +142,6 @@ Kiwigl uses the following keyboard shortcuts:
 | Command Keybind | Command Description |
 | --------------- | ------------------- |
 | <kbd>CTRL</kbd> + <kbd>q</kbd> | Quit the application |
-
 
 <!-- PROJECT FILE STRUCTURE -->
 ## Project Structure

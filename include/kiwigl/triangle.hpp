@@ -1,5 +1,5 @@
 #pragma once
-#include "../include/vector2d.hpp"
+#include "vector.hpp"
 
 namespace kiwigl {
 class Triangle {

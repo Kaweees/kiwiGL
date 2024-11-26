@@ -1,6 +1,6 @@
 #pragma once
-#include "../include/color.hpp"
-#include "../include/texture.hpp"
+#include "color.hpp"
+#include "texture.hpp"
 
 namespace kiwigl {
 // Represents a two-dimensional texture

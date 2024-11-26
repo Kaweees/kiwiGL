@@ -13,7 +13,7 @@
 #include "frame_buffer.hpp"
 #include "mesh.hpp"
 #include "triangle.hpp"
-#include "vector3d.hpp"
+#include "vector.hpp"
 
 #ifdef USE_CUDA
 #include "display.cuh"
@@ -124,8 +124,7 @@ void processInput();
 // Method to update the display
 void update() {
 #ifndef BENCHMARK_MODE
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-    ;
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
   prevTime = SDL_GetTicks();
 #endif
 
