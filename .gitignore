@@ -59,8 +59,11 @@ _deps/
 Makefile
 obj/
 CMakeFiles/
-CPackSourceConfig.cmake 
+CPackSourceConfig.cmake
 CMakeSettings.json
+CTestTestfile.cmake
+*_include.cmake
+*_tests.cmake
 
 # Build files
 .cache/

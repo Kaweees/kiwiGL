@@ -1,6 +1,6 @@
 #pragma once
 
-namespace graphics {
+namespace kiwigl {
 // Represents a two-dimensional texture
 class Texture2D {
   public:
@@ -16,4 +16,4 @@ class Texture2D {
   // The vertical coordinate of the texture
   double v;
 };
-}  // namespace graphics
+}  // namespace kiwigl

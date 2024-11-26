@@ -1,6 +1,6 @@
 #include <Metal/Metal.h>
 
-namespace graphics {
+namespace kiwigl {
 void Display::InitalizeMetal() {
   // Load and compile the Metal shader
   NSError *error = nullptr;
@@ -41,4 +41,4 @@ void Display::LaunchMetal() {
   // Execute the Metal kernel
   // ... (code to execute the Metal kernel)
 }
-}  // namespace graphics
+}  // namespace kiwigl

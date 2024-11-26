@@ -2,7 +2,7 @@
 #include "../include/color.hpp"
 #include "../include/texture.hpp"
 
-namespace graphics {
+namespace kiwigl {
 // Represents a two-dimensional texture
 class Face {
   public:
@@ -23,4 +23,4 @@ class Face {
   // The color of the face
   Color color;
 };
-}  // namespace graphics
+}  // namespace kiwigl

@@ -19,12 +19,12 @@
 
 </div>
 
-<a href="https://github.com/Kaweees/graphics">
+<a href="https://github.com/Kaweees/kiwigl">
   <img alt="C++ Logo" src="assets/img/cpp.svg" align="right" width="150">
 </a>
 
 <div align="left">
-  <h1><em><a href="https://github.com/Kaweees/graphics">~graphics</a></em></h1>
+  <h1><em><a href="https://github.com/Kaweees/kiwigl">~kiwigl</a></em></h1>
 </div>
 
 <!-- ABOUT THE PROJECT -->
@@ -63,8 +63,8 @@ To get a local copy of the project up and running on your machine, follow these 
 1. Clone the project repository
 
    ```sh
-   git clone https://github.com/Kaweees/graphics.git
-   cd graphics
+   git clone https://github.com/Kaweees/kiwigl.git
+   cd kiwigl
    ```
 
 2. Build and execute the project
@@ -77,7 +77,7 @@ To get a local copy of the project up and running on your machine, follow these 
 
 ### Benchmarks
 
-The graphics library is capable of rendering 3D scenes with thousands of triangles at interactive frame rates. The following benchmarks were conducted on a 2019 MacBook Pro with a 2.3 GHz 8-Core Intel Core i9 processor and 16 GB of RAM.
+Kiwigl is capable of rendering 3D scenes with thousands of triangles at interactive frame rates. The following benchmarks were conducted on a 2019 MacBook Pro with a 2.3 GHz 8-Core Intel Core i9 processor and 16 GB of RAM.
 
 | Benchmark | Description | Result |
 | --------- | ----------- | ------ |
@@ -88,14 +88,14 @@ The graphics library is capable of rendering 3D scenes with thousands of triangl
 
 ### Convention
 
-The graphics library uses the following conventions:
+Kiwigl uses the following conventions:
 - [left-handed coordinate system](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/coordinate-systems.html#:~:text=The%20differentiation%20between%20left%2Dhanded,a%20right%2Dhand%20coordinate%20system)
 - counter-clockwise winding order for triangle vertices
 
 
 ### Keyboard Controls
 
-To interact with the graphics library, use the following keyboard shortcuts:
+Kiwigl uses the following keyboard shortcuts:
 
 | Command Keybind | Command Description |
 | --------------- | ------------------- |
@@ -118,17 +118,17 @@ graphics/
 
 ## License
 
-The source code for my website is distributed under the terms of the GNU General Public License v3.0, as I firmly believe that collaborating on free and open-source software fosters innovations that mutually and equitably beneficial to both collaborators and users alike. See [`LICENSE`](./LICENSE) for details and more information.
+The source code for kiwigl  is distributed under the terms of the GNU General Public License v3.0, as I firmly believe that collaborating on free and open-source software fosters innovations that mutually and equitably beneficial to both collaborators and users alike. See [`LICENSE`](./LICENSE) for details and more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/Kaweees/graphics.svg?style=for-the-badge
-[contributors-url]: https://github.com/Kaweees/graphics/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Kaweees/graphics.svg?style=for-the-badge
-[forks-url]: https://github.com/Kaweees/graphics/network/members
-[stars-shield]: https://img.shields.io/github/stars/Kaweees/graphics.svg?style=for-the-badge
-[stars-url]: https://github.com/Kaweees/graphics/stargazers
+[contributors-shield]: https://img.shields.io/github/contributors/Kaweees/kiwigl.svg?style=for-the-badge
+[contributors-url]: https://github.com/Kaweees/kiwigl/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Kaweees/kiwigl.svg?style=for-the-badge
+[forks-url]: https://github.com/Kaweees/kiwigl/network/members
+[stars-shield]: https://img.shields.io/github/stars/Kaweees/kiwigl.svg?style=for-the-badge
+[stars-url]: https://github.com/Kaweees/kiwigl/stargazers
 
 <!-- MARKDOWN SHIELD BAGDES & LINKS -->
 <!-- https://github.com/Ileriayo/markdown-badges -->

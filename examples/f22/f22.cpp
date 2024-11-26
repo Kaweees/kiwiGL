@@ -1,7 +1,8 @@
 #include <stddef.h>
 #include <stdio.h>
 
-#include "../include/display.hpp"
+#include <iostream>
+#include <kiwigl/kiwigl.hpp>
 
 #ifdef USE_METAL
 #include <cassert>
@@ -17,16 +18,13 @@
 #include <MetalKit/MetalKit.hpp>
 #endif
 
-#define EXIT_SUCCESS 0
-#define EXIT_FAILURE 1
-
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(int argc, char **argv) {
 // Initialization of display
 #ifndef BENCHMARK_MODE
-  graphics::Display display;
+  kiwigl::Display display;
 #else
   graphics::Display display(10000);
 #endif
@@ -41,5 +39,5 @@ int main(int argc, char **argv) {
     display.render();
 #endif
   }
-  return EXIT_SUCCESS;
+  return 0;
 }

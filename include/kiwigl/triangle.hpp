@@ -1,7 +1,7 @@
 #pragma once
 #include "../include/vector2d.hpp"
 
-namespace graphics {
+namespace kiwigl {
 class Triangle {
   public:
   // Constructor to initialize memory
@@ -12,4 +12,4 @@ class Triangle {
 
   Vector2D points[3];
 };
-}  // namespace graphics
+}  // namespace kiwigl
