@@ -1,15 +1,11 @@
 #include "../include/display.hpp"
 
-#include "../include/constants.hpp"
-#include "../include/mesh.hpp"
-
-
-
 #include <SDL2/SDL.h>
 
 #include <string>
 
 #include "../include/constants.hpp"
+#include "../include/mesh.hpp"
 #include "../include/vector3d.hpp"
 
 namespace kiwigl {
