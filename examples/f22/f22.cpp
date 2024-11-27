@@ -5,17 +5,17 @@
 #include <kiwigl/kiwigl.hpp>
 
 #ifdef USE_METAL
-#include <cassert>
+#  include <cassert>
 
-#define NS_PRIVATE_IMPLEMENTATION
-#define MTL_PRIVATE_IMPLEMENTATION
-#define MTK_PRIVATE_IMPLEMENTATION
-#define CA_PRIVATE_IMPLEMENTATION
-#include <simd/simd.h>
+#  define NS_PRIVATE_IMPLEMENTATION
+#  define MTL_PRIVATE_IMPLEMENTATION
+#  define MTK_PRIVATE_IMPLEMENTATION
+#  define CA_PRIVATE_IMPLEMENTATION
+#  include <simd/simd.h>
 
-#include <AppKit/AppKit.hpp>
-#include <Metal/Metal.hpp>
-#include <MetalKit/MetalKit.hpp>
+#  include <AppKit/AppKit.hpp>
+#  include <Metal/Metal.hpp>
+#  include <MetalKit/MetalKit.hpp>
 #endif
 
 //------------------------------------------------------------------------------------

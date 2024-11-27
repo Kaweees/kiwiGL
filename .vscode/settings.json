@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "__hash_table": "cpp",
+    "__tree": "cpp",
+    "deque": "cpp",
+    "forward_list": "cpp",
+    "ios": "cpp",
+    "list": "cpp",
+    "string": "cpp"
+  }
+}
