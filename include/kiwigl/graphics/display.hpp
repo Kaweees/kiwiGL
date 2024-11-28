@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #include <memory>
+#include <string>
 
 #include "../core/constants.hpp"
 #include "../geometry/mesh.hpp"
@@ -94,19 +95,10 @@ namespace kiwigl {
       // Initialize the frame buffer
       frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
-      // Initialize the frame buffer
-      frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
-
       // Initialize the CUDA device pointers
       d_faces = nullptr;
       d_vertices = nullptr;
       d_projectedTriangles = nullptr;
-
-      // Initialize the mesh
-      mesh = Mesh();
-      mesh.loadMesh(std::string("assets/f22.obj"));
-
-      projectedTriangles.resize(mesh.faces.size());
 
 #ifdef USE_CUDA
       InitalizeCuda();
@@ -189,8 +181,7 @@ namespace kiwigl {
     // Method to update the display
     void update() {
 #ifndef BENCHMARK_MODE
-      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-        ;
+      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
       prevTime = SDL_GetTicks();
 #endif
 
@@ -318,5 +309,12 @@ namespace kiwigl {
     // Method to launch Metal
     virtual void LaunchMetal();
 #endif
+
+    // Method to load a mesh
+    void loadMesh(const std::string &filename) {
+      mesh = Mesh();
+      mesh.loadMesh(filename);
+      projectedTriangles.resize(mesh.faces.size());
+    }
   };
 }  // namespace kiwigl

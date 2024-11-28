@@ -22,9 +22,12 @@
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(int argc, char **argv) {
-// Initialization of display
+  // Initialization of display
 #ifndef BENCHMARK_MODE
   kiwigl::Display display;
+
+  // Load the F-22 mesh
+  display.loadMesh("../assets/f22.obj");
 #else
   graphics::Display display(10000);
 #endif
