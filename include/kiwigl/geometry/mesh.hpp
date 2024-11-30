@@ -13,8 +13,8 @@
 
 namespace kiwigl {
 
-  class Mesh {
-    public:
+class Mesh {
+  public:
     // Constructor to initialize memory
     Mesh() = default;
 
@@ -36,21 +36,16 @@ namespace kiwigl {
           if (line.find("v ") != std::string::npos) {
             // Parse the vertex
             Vector3D vertex;
-            if (sscanf(line.c_str(), "v %lf %lf %lf", &vertex.x, &vertex.y, &vertex.z) == 3) {
-              addVertex(vertex);
-            }
+            if (sscanf(line.c_str(), "v %lf %lf %lf", &vertex.x, &vertex.y, &vertex.z) == 3) { addVertex(vertex); }
           } else if (line.find("vt ") != std::string::npos) {
             // Parse the texture coordinate
             Texture2D texture;
-            if (sscanf(line.c_str(), "vt %lf %lf", &texture.u, &texture.v) == 2) {
-              addTexture(texture);
-            }
+            if (sscanf(line.c_str(), "vt %lf %lf", &texture.u, &texture.v) == 2) { addTexture(texture); }
           } else if (line.find("f ") != std::string::npos) {
             // Parse the face
             int v1, v2, v3, t1, t2, t3, n1, n2, n3;
-            if (sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &t1, &n1, &v2, &t2, &n2,
-                    &v3, &t3, &n3)
-                == 9) {
+            if (sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &t1, &n1, &v2, &t2, &n2, &v3, &t3, &n3) ==
+                9) {
               addFace(v1, v2, v3, textures[t1 - 1], textures[t2 - 1], textures[t3 - 1], WHITE);
             }
           }
@@ -79,8 +74,8 @@ namespace kiwigl {
     void addTexture(const Texture2D& texture) { textures.push_back(texture); }
 
     // Method to add a face
-    void addFace(int v1, int v2, int v3, const Texture2D& t1, const Texture2D& t2,
-        const Texture2D& t3, const Color& color) {
+    void addFace(int v1, int v2, int v3, const Texture2D& t1, const Texture2D& t2, const Texture2D& t3,
+                 const Color& color) {
       faces.push_back(Face(v1, v2, v3, t1, t2, t3, color));
     }
 
@@ -90,6 +85,6 @@ namespace kiwigl {
     Vector3D scale;
     Vector3D rotation;
     Vector3D translation;
-  };
+};
 
-}  // namespace kiwigl
+} // namespace kiwigl

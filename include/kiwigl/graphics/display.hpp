@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef BENCHMARK_MODE
-#  include <SDL2/SDL.h>
+#include <SDL2/SDL.h>
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,33 +16,33 @@
 #include "../graphics/frame_buffer.hpp"
 
 #ifdef USE_CUDA
-#  include "display.cuh"
+#include "display.cuh"
 #elif USE_METAL
-#  include "display.metal"
+#include "display.metal"
 #endif
 
 namespace kiwigl {
-  // An enum to represent the various methods to render the display
-  enum RenderMethod {
-    RENDER_WIRE,
-    RENDER_WIRE_VERTEX,
-    RENDER_FILL_TRIANGLE,
-    RENDER_FILL_TRIANGLE_WIRE,
-    RENDER_TEXTURED,
-    RENDER_TEXTURED_WIRE
-  };
+// An enum to represent the various methods to render the display
+enum RenderMethod {
+  RENDER_WIRE,
+  RENDER_WIRE_VERTEX,
+  RENDER_FILL_TRIANGLE,
+  RENDER_FILL_TRIANGLE_WIRE,
+  RENDER_TEXTURED,
+  RENDER_TEXTURED_WIRE
+};
 
-  // Represents a display
-  class Display {
-    private:
+// Represents a display
+class Display {
+  private:
     // Constants for display
     SDL_DisplayMode displayMode;
 #ifndef BENCHMARK_MODE
     bool fullScreen;
-    SDL_Window *window;
-    SDL_Texture *texture;
-    SDL_Surface *surface;
-    SDL_Renderer *renderer;
+    SDL_Window* window;
+    SDL_Texture* texture;
+    SDL_Surface* surface;
+    SDL_Renderer* renderer;
     SDL_Keycode keyPressed;
     uint32_t prevTime;
     RenderMethod renderMethod;
@@ -53,15 +53,14 @@ namespace kiwigl {
     std::unique_ptr<FrameBuffer> frameBuffer;
     Mesh mesh;
     std::vector<Triangle> projectedTriangles;
-    Face *d_faces;
-    Vector3D *d_vertices;
-    Triangle *d_projectedTriangles;
+    Face* d_faces;
+    Vector3D* d_vertices;
+    Triangle* d_projectedTriangles;
 
     Vector3D camera;
     Vector3D rotation;
     Vector3D rotationSpeed;
-
-    public:
+  public:
 #ifndef BENCHMARK_MODE
     // Constructor to initialize memory
     Display() {
@@ -108,9 +107,8 @@ namespace kiwigl {
 
 #ifndef BENCHMARK_MODE
       // Initialize the SDL window
-      window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-          frameBuffer->getWidth(), frameBuffer->getHeight(),
-          fullScreen ? SDL_WINDOW_BORDERLESS : SDL_WINDOW_SHOWN);
+      window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
+                                frameBuffer->getHeight(), fullScreen ? SDL_WINDOW_BORDERLESS : SDL_WINDOW_SHOWN);
       if (window == nullptr) {
         fprintf(stderr, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
@@ -125,7 +123,7 @@ namespace kiwigl {
 
       // Initialize the SDL texture
       texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
-          frameBuffer->getWidth(), frameBuffer->getHeight());
+                                  frameBuffer->getWidth(), frameBuffer->getHeight());
       if (texture == nullptr) {
         fprintf(stderr, "Texture could not be created! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
@@ -167,12 +165,9 @@ namespace kiwigl {
           case SDL_KEYDOWN:
             keyPressed = event.key.keysym.sym;
             // Reset rotation speeds when space is pressed
-            if (keyPressed == SDLK_SPACE) {
-              rotationSpeed = Vector3D(0, 0, 0);
-            }
+            if (keyPressed == SDLK_SPACE) { rotationSpeed = Vector3D(0, 0, 0); }
             break;
-          default:
-            keyPressed = SDLK_UNKNOWN;
+          default: keyPressed = SDLK_UNKNOWN;
         }
       }
 #endif
@@ -191,48 +186,38 @@ namespace kiwigl {
 #elif USE_METAL
       LaunchMetal();
 #else
-    for (int i = 0; i < mesh.faces.size(); i++) {
-      // Transform the vertices of the face
-      Face face = mesh.faces[i];
-      for (int j = 0; j < 3; j++) {
-        // Transform the vertices
-        Vector3D vertex = mesh.vertices[face.vertexIndices[j] - 1];
+  for (int i = 0; i < mesh.faces.size(); i++) {
+    // Transform the vertices of the face
+    Face face = mesh.faces[i];
+    for (int j = 0; j < 3; j++) {
+      // Transform the vertices
+      Vector3D vertex = mesh.vertices[face.vertexIndices[j] - 1];
 
-        // Rotate the vertices
-        vertex.rotate(rotation.x, rotation.y, rotation.z);
+      // Rotate the vertices
+      vertex.rotate(rotation.x, rotation.y, rotation.z);
 
-        // Translate the vertices
-        vertex.translate(camera.x, camera.y, -camera.z);
+      // Translate the vertices
+      vertex.translate(camera.x, camera.y, -camera.z);
 
-        // Scale the vertices
-        vertex.scale(1.01, 1.01, 1.01);
+      // Scale the vertices
+      vertex.scale(1.01, 1.01, 1.01);
 
-        // Project the transformed vertices
-        projectedTriangles[i].points[j] = vertex.project();
+      // Project the transformed vertices
+      projectedTriangles[i].points[j] = vertex.project();
 
-        // Translate the projected vertices to the center of the screen
-        projectedTriangles[i].points[j].translate(
-            frameBuffer->getWidth() / 2, frameBuffer->getHeight() / 2);
-      }
+      // Translate the projected vertices to the center of the screen
+      projectedTriangles[i].points[j].translate(frameBuffer->getWidth() / 2, frameBuffer->getHeight() / 2);
     }
+  }
 #endif
 #ifndef BENCHMARK_MODE
       // Update rotation
       switch (keyPressed) {
-        case SDLK_UP:
-          rotationSpeed.x += 0.01;
-          break;
-        case SDLK_DOWN:
-          rotationSpeed.x -= 0.01;
-          break;
-        case SDLK_LEFT:
-          rotationSpeed.y += 0.01;
-          break;
-        case SDLK_RIGHT:
-          rotationSpeed.y -= 0.01;
-          break;
-        default:
-          break;
+        case SDLK_UP: rotationSpeed.x += 0.01; break;
+        case SDLK_DOWN: rotationSpeed.x -= 0.01; break;
+        case SDLK_LEFT: rotationSpeed.y += 0.01; break;
+        case SDLK_RIGHT: rotationSpeed.y -= 0.01; break;
+        default: break;
       }
       rotation.translate(rotationSpeed.x, rotationSpeed.y, rotationSpeed.z);
 #endif
@@ -245,21 +230,19 @@ namespace kiwigl {
 
       frameBuffer->drawGrid(Color(0xFF444444));
 
-      for (auto &triangle : projectedTriangles) {
+      for (auto& triangle : projectedTriangles) {
         for (int i = 0; i < 3; i++) {
           // Draw vertex points
-          frameBuffer->drawFilledRectangle(
-              triangle.points[i].x, triangle.points[i].y, 3, 3, Color(0xFFFFFF00));
+          frameBuffer->drawFilledRectangle(triangle.points[i].x, triangle.points[i].y, 3, 3, Color(0xFFFFFF00));
         }
         // Draw triangle
         frameBuffer->drawTriangle(triangle.points[0].x, triangle.points[0].y, triangle.points[1].x,
-            triangle.points[1].y, triangle.points[2].x, triangle.points[2].y, Color(0xFFFFFF00));
+                                  triangle.points[1].y, triangle.points[2].x, triangle.points[2].y, Color(0xFFFFFF00));
       }
 
 #ifndef BENCHMARK_MODE
       // Update the texture with the frame buffer data
-      SDL_UpdateTexture(texture, nullptr, frameBuffer->getData().data(),
-          frameBuffer->getWidth() * sizeof(uint32_t));
+      SDL_UpdateTexture(texture, nullptr, frameBuffer->getData().data(), frameBuffer->getWidth() * sizeof(uint32_t));
 
       // Copy the texture to the renderer
       SDL_RenderCopy(renderer, texture, nullptr, nullptr);
@@ -312,10 +295,10 @@ namespace kiwigl {
 #endif
 
     // Method to load a mesh
-    void loadMesh(const std::string &filename) {
+    void loadMesh(const std::string& filename) {
       mesh = Mesh();
       mesh.loadMesh(filename);
       projectedTriangles.resize(mesh.faces.size());
     }
-  };
-}  // namespace kiwigl
+};
+} // namespace kiwigl

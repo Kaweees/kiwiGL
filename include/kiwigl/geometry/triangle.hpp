@@ -2,8 +2,8 @@
 #include "vector.hpp"
 
 namespace kiwigl {
-  class Triangle {
-    public:
+class Triangle {
+  public:
     // Constructor to initialize memory
     Triangle() = default;
 
@@ -11,5 +11,5 @@ namespace kiwigl {
     ~Triangle() = default;
 
     Vector2D points[3];
-  };
-}  // namespace kiwigl
+};
+} // namespace kiwigl

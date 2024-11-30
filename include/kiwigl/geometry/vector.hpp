@@ -7,12 +7,17 @@ using std::sqrt;
 #include "../core/constants.hpp"
 
 namespace kiwigl {
-  // Represents a two-dimensional vector
-  class Vector2D {
-    public:
+// Represents a two-dimensional vector
+class Vector2D {
+  public:
     // Constructor to initialize memory
-    Vector2D() : x(0), y(0) {}
-    Vector2D(double x, double y) : x(x), y(y) {}
+    Vector2D()
+      : x(0),
+        y(0) {}
+
+    Vector2D(double x, double y)
+      : x(x),
+        y(y) {}
 
     // Destructor to free the memory allocated
     ~Vector2D() = default;
@@ -27,14 +32,21 @@ namespace kiwigl {
       this->x += x;
       this->y += y;
     }
-  };
+};
 
-  // Represents a three-dimensional vector
-  class Vector3D {
-    public:
+// Represents a three-dimensional vector
+class Vector3D {
+  public:
     // Constructor to initialize memory
-    Vector3D() : x(0), y(0), z(0) {}
-    Vector3D(double x, double y, double z) : x(x), y(y), z(z) {}
+    Vector3D()
+      : x(0),
+        y(0),
+        z(0) {}
+
+    Vector3D(double x, double y, double z)
+      : x(x),
+        y(y),
+        z(z) {}
 
     // Destructor to free the memory allocated
     ~Vector3D() = default;
@@ -93,5 +105,5 @@ namespace kiwigl {
       x = x_new;
       y = y_new;
     }
-  };
-}  // namespace kiwigl
+};
+} // namespace kiwigl
