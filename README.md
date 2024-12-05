@@ -77,11 +77,13 @@ To get a local copy of the project up and running on your machine, follow these 
    ```
 
 3. Generate build files using CMake
+
    ```sh
    cmake -S .. -B . -DCMAKE_BUILD_TYPE=Debug
    ```
 
 4. Build the entire project
+
    ```sh
    cmake --build .
    ```
@@ -89,16 +91,19 @@ To get a local copy of the project up and running on your machine, follow these 
 ### Building and Running Tests
 
 1. Build only the tests
+
    ```sh
    cmake --build . --target tests
    ```
 
 2. Run all tests
+
    ```sh
    ctest --output-on-failure
    ```
 
 3. Run a specific test suite
+
    ```sh
    ./tests/test_suite_name
    ```
@@ -106,17 +111,20 @@ To get a local copy of the project up and running on your machine, follow these 
 ### Building and Running Examples
 
 1. Build only the examples
+
    ```sh
    cmake --build . --target examples
    ```
 
 2. Run a specific example
+
    ```sh
    ./examples/example_name
    ```
 
 ## Usage
 
+<!--
 ### Benchmarks
 
 Kiwigl is capable of rendering 3D scenes with thousands of triangles at interactive frame rates. The following benchmarks were conducted on a 2019 MacBook Pro with a 2.3 GHz 8-Core Intel Core i9 processor and 16 GB of RAM.
@@ -127,13 +135,14 @@ Kiwigl is capable of rendering 3D scenes with thousands of triangles at interact
 | `sphere` | Render a sphere with 960 triangles | 60 FPS |
 | `bunny` | Render a Stanford Bunny with 69451 triangles | 60 FPS |
 | `dragon` | Render a Stanford Dragon with 871306 triangles | 60 FPS |
+-->
 
 ### Convention
 
 Kiwigl uses the following conventions:
-- [left-handed coordinate system](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/coordinate-systems.html#:~:text=The%20differentiation%20between%20left%2Dhanded,a%20right%2Dhand%20coordinate%20system)
-- counter-clockwise winding order for triangle vertices
 
+- [left-handed coordinate system](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/coordinate-systems.html#:~:text=The%20differentiation%20between%20left%2Dhanded,a%20right%2Dhand%20coordinate%20system)
+- [counter-clockwise winding order](https://learnwebgl.brown37.net/model_data/model_volume.html#:~:text=Winding%20Order%20for%20a%20triangle,the%20front%20of%20the%20triangle.) for triangle vertices
 
 ### Keyboard Controls
 
