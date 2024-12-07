@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 #ifndef BENCHMARK_MODE
   kiwigl::Display display;
 
-  // Load the F-22 mesh
+  // Load the Stanford bunny mesh
   display.loadMesh("../assets/bunny.obj");
 #else
   graphics::Display display(10000);
