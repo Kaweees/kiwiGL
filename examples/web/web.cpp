@@ -39,10 +39,10 @@ int main(int argc, char** argv) {
   // Register cleanup function to be called on exit
   atexit(cleanup);
 
-  // Set up the main loop for Emscripten with proper timing
+  // Set up the main loop for Emscripten
   emscripten_set_main_loop(mainLoop, 0, true);
-  // Note: The second parameter (0) means use browser's requestAnimationFrame
-  // The third parameter (true) means simulate infinite loop
+  // Set timing mode after setting up the loop
+  emscripten_set_main_loop_timing(EM_TIMING_RAF, 0);
 
   return 0;
 }
