@@ -8,6 +8,7 @@
             border: 1px solid black;
             width: 800px;
             height: 600px;
+            image-rendering: pixelated;
         }
     </style>
 </head>
@@ -15,9 +16,18 @@
     <canvas id="canvas"></canvas>
     <script>
         var Module = {
-            canvas: document.getElementById('canvas')
+            canvas: document.getElementById('canvas'),
+            onRuntimeInitialized: function() {
+                console.log('WebAssembly runtime initialized');
+            },
+            print: function(text) {
+                console.log(text);
+            },
+            printErr: function(text) {
+                console.error(text);
+            }
         };
     </script>
-    <script src="bunny.js"></script>
+    <script async src="web.js"></script>
 </body>
 </html>
