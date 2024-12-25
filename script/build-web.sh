@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Format script called by the CI
+# Usage:
+#    format.sh format
+
+#
+#  Private Impl
+#
+
 # Ensure emscripten is available
 if ! command -v emcmake &> /dev/null; then
     echo "emcmake not found. Please install and activate Emscripten"
@@ -20,4 +28,4 @@ emcmake cmake .. \
 cmake --build . -j$(nproc)
 
 # Copy web files
-cp ../web/index.html ../target/release/ 
+cp ../web/index.html ../target/release/
