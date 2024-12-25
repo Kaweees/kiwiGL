@@ -8,6 +8,7 @@
 #  Private Impl
 #
 
+
 # Ensure emscripten is available
 if ! command -v emcmake &> /dev/null; then
     echo "emcmake not found. Please install and activate Emscripten"

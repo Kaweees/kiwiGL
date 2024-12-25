@@ -29,7 +29,7 @@ jobs:
       #     version-sdl-image: 2-latest
       - name: Build Project
         run: |
-          ./script/web.sh
+          sudo ./script/web.sh
       - name: Deploy to gh-pages
         uses: crazy-max/ghaction-github-pages@v4
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
