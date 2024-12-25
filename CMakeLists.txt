@@ -10,6 +10,7 @@ option(BENCHMARK "Build with benchmark mode" OFF)
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 if(BUILD_WASM)
   # Ensure we're using Emscripten compiler
@@ -17,15 +18,21 @@ if(BUILD_WASM)
     message(FATAL_ERROR "BUILD_WASM requires using Emscripten CMake toolchain")
   endif()
 
+  # Add EMSCRIPTEN definition
+  # add_definitions(-D__EMSCRIPTEN__)
+
   # WebAssembly specific settings
-  set(CMAKE_EXECUTABLE_SUFFIX ".js")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s WASM=1")
+  set(USE_FLAGS "-s USE_SDL=2 -s WASM=1")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s EXPORTED_FUNCTIONS=['_main']")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ASSERTIONS=1")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS}")
+  set(CMAKE_EXECUTABLE_SUFFIX .js)
 
   # Disable CUDA/Metal when building for web
   set(CUDA_FOUND FALSE)
