@@ -19,7 +19,7 @@ if(BUILD_WASM)
   endif()
 
   # Add EMSCRIPTEN definition
-  # add_definitions(-D__EMSCRIPTEN__)
+  add_definitions(-D__EMSCRIPTEN__)
 
   # WebAssembly specific settings
   set(USE_FLAGS "-s USE_SDL=2 -s WASM=1")
