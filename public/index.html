@@ -8,38 +8,27 @@
             border: 1px solid black;
             width: 800px;
             height: 600px;
-            display: block;
-            margin: 0 auto;
-        }
-        body {
-            background-color: #f0f0f0;
         }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
-    <script type='text/javascript'>
+    <script>
         var Module = {
-            canvas: (function() {
-                var canvas = document.getElementById('canvas');
-                // As a default initial behavior, pop up an alert when webgl context is lost
-                canvas.addEventListener("webglcontextlost", function(e) {
-                    alert('WebGL context lost. You will need to reload the page.');
-                    e.preventDefault();
-                }, false);
-                return canvas;
-            })(),
+            canvas: document.getElementById('canvas'),
             onRuntimeInitialized: function() {
                 console.log('WebAssembly runtime initialized');
             },
+            preRun: [],
+            postRun: [],
             print: function(text) {
-                console.log('[STDOUT]:', text);
+                console.log(text);
             },
             printErr: function(text) {
-                console.warn('[STDERR]:', text);
+                console.error(text);
             }
         };
     </script>
-    <script async type="text/javascript" src="web.js"></script>
+    <script async src="bunny.js"></script>
 </body>
 </html>
