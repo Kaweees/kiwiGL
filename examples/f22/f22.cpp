@@ -25,12 +25,12 @@ int main(int argc, char** argv) {
   // Initialization of display
 #ifndef BENCHMARK_MODE
   kiwigl::Display display;
-
+#else
+  kiwigl::Display display(10000);
+#endif
   // Load the F-22 mesh
   display.loadMesh("../assets/f22.obj");
-#else
-  graphics::Display display(10000);
-#endif
+
   // Main graphics loop
   // Loop until window close button is pressed
   while (!display.shouldClose()) {
