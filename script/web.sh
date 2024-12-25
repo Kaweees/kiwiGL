@@ -30,6 +30,7 @@ cmake --build . -j$(nproc)
 # Copy web files
 cp ../target/release/*.wasm ../public/
 cp ../target/release/*.js ../public/
+cp ../target/release/*.data ../public/
 
 cd ..
 ls -la
