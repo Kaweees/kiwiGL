@@ -39,9 +39,10 @@ int main(int argc, char** argv) {
   // Register cleanup function to be called on exit
   atexit(cleanup);
 
-  // Set up the main loop for Emscripten
+  // Set up the main loop for Emscripten first
   emscripten_set_main_loop(mainLoop, 0, true);
-  // Set timing mode after setting up the loop
+
+  // Then set the timing mode
   emscripten_set_main_loop_timing(EM_TIMING_RAF, 0);
 
   return 0;
