@@ -8,7 +8,6 @@
 #  Private Impl
 #
 
-
 # Ensure emscripten is available
 if ! command -v emcmake &> /dev/null; then
     echo "emcmake not found. Please install and activate Emscripten"
@@ -16,8 +15,8 @@ if ! command -v emcmake &> /dev/null; then
 fi
 
 # Create build directory
-mkdir -p build-wasm
-cd build-wasm
+mkdir -p build
+cd build
 
 # Configure with Emscripten
 emcmake cmake .. \
@@ -28,5 +27,11 @@ emcmake cmake .. \
 # Build
 cmake --build . -j$(nproc)
 
-# Copy web files
-cp ../web/index.html ../target/release/
+cd web
+
+ls -la
+
+# cp ../web/index.js ../target/release/
+
+# # Copy web files
+# cp ../web/index.html ../target/release/
