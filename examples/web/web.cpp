@@ -31,10 +31,11 @@ int main(int argc, char** argv) {
   g_display->loadMesh("assets/bunny.obj");
 
 #ifdef __EMSCRIPTEN__
-  // Set up the main loop for Emscripten with proper timing
-  emscripten_set_main_loop(mainLoop, 0, true);
-  // Note: The second parameter (0) means use browser's requestAnimationFrame
-  // The third parameter (true) means simulate infinite loop
+  // Set the target FPS (60 in this case)
+  emscripten_set_main_loop_timing(EM_TIMING_RAF, 60);
+
+  // Set up the main loop for Emscripten
+  emscripten_set_main_loop(mainLoop, 0, 1);
 #else
   // Traditional loop for native builds
   while (!g_display->shouldClose()) { mainLoop(); }
