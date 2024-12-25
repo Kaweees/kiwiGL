@@ -18,6 +18,14 @@ void mainLoop() {
   }
 }
 
+// Cleanup function to be called when the application exits
+void cleanup() {
+  if (g_display) {
+    delete g_display;
+    g_display = nullptr;
+  }
+}
+
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -28,12 +36,13 @@ int main(int argc, char** argv) {
   // Load the Stanford bunny mesh
   g_display->loadMesh("assets/bunny.obj");
 
+  // Register cleanup function to be called on exit
+  atexit(cleanup);
+
   // Set up the main loop for Emscripten with proper timing
   emscripten_set_main_loop(mainLoop, 0, true);
   // Note: The second parameter (0) means use browser's requestAnimationFrame
   // The third parameter (true) means simulate infinite loop
 
-  // Cleanup
-  delete g_display;
   return 0;
 }
