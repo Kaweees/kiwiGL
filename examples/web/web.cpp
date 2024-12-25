@@ -19,8 +19,10 @@ void mainLoop() {
     g_display->render();
 
 #ifdef __EMSCRIPTEN__
-    // Add a small delay to control frame rate
+// Use emscripten_sleep only if EMTERPRETIFY is enabled
+#ifdef EMTERPRETIFY_ASYNC
     emscripten_sleep(16); // ~60 FPS
+#endif
 #endif
   }
 }
@@ -29,11 +31,18 @@ void mainLoop() {
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(int argc, char** argv) {
+  printf("Initializing display...\n");
+
   // Initialization of display
   g_display = new kiwigl::Display();
 
-  // Load the Stanford bunny mesh
-  g_display->loadMesh("assets/bunny.obj");
+  // Load the mesh
+  if (!g_display->loadMesh("assets/bunny.obj")) {
+    printf("Failed to load mesh!\n");
+    return 1;
+  }
+
+  printf("Starting main loop...\n");
 
 #ifdef __EMSCRIPTEN__
   // Set up the main loop for Emscripten
