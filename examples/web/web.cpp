@@ -31,9 +31,6 @@ int main(int argc, char** argv) {
   g_display->loadMesh("assets/bunny.obj");
 
 #ifdef __EMSCRIPTEN__
-  // Set the target FPS (60 in this case)
-  emscripten_set_main_loop_timing(EM_TIMING_RAF, 60);
-
   // Set up the main loop for Emscripten
   emscripten_set_main_loop(mainLoop, 0, true);
 #else
