@@ -1,46 +1,44 @@
 #include <stddef.h>
 #include <stdio.h>
-
 #include <iostream>
 #include <kiwigl/kiwigl.hpp>
 
-#ifdef USE_METAL
-#include <cassert>
-
-#define NS_PRIVATE_IMPLEMENTATION
-#define MTL_PRIVATE_IMPLEMENTATION
-#define MTK_PRIVATE_IMPLEMENTATION
-#define CA_PRIVATE_IMPLEMENTATION
-#include <simd/simd.h>
-
-#include <AppKit/AppKit.hpp>
-#include <Metal/Metal.hpp>
-#include <MetalKit/MetalKit.hpp>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
 #endif
+
+// Global display object since the loop function needs access
+kiwigl::Display* g_display = nullptr;
+
+// The loop function that will be called by Emscripten
+void mainLoop() {
+  if (g_display) {
+    g_display->processInput();
+    g_display->update();
+    g_display->render();
+  }
+}
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(int argc, char** argv) {
   // Initialization of display
-#ifndef BENCHMARK_MODE
-  kiwigl::Display display;
-#else
-  kiwigl::Display display(10000);
-#endif
-  // Load the Stanford bunny mesh
-  display.loadMesh("assets/bunny.obj");
+  g_display = new kiwigl::Display();
 
-  // Main graphics loop
-  // Loop until window close button is pressed
-  while (!display.shouldClose()) {
-#ifdef BENCHMARK_MODE
-    display.update();
+  // Load the Stanford bunny mesh
+  g_display->loadMesh("assets/bunny.obj");
+
+#ifdef __EMSCRIPTEN__
+  // Set up the main loop for Emscripten
+  emscripten_set_main_loop(mainLoop, 0, 1);
 #else
-    display.processInput();
-    display.update();
-    display.render();
+  // Traditional loop for native builds
+  while (!g_display->shouldClose()) { mainLoop(); }
 #endif
-  }
+
+  // Cleanup
+  delete g_display;
   return 0;
 }
