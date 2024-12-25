@@ -18,20 +18,23 @@ if(BUILD_WASM)
     message(FATAL_ERROR "BUILD_WASM requires using Emscripten CMake toolchain")
   endif()
 
-  # Add EMSCRIPTEN definition
-  add_definitions(-D__EMSCRIPTEN__)
-
   # WebAssembly specific settings
-  set(USE_FLAGS "-s USE_SDL=2 -s WASM=1")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ALLOW_MEMORY_GROWTH=1")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s EXPORTED_FUNCTIONS=['_main']")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s ASSERTIONS=1")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS}")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS}")
+  set(EMSCRIPTEN_LINK_FLAGS
+    "-s ALLOW_MEMORY_GROWTH=1"
+    "-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
+    "-s EXPORTED_FUNCTIONS=['_main']"
+    "-s NO_EXIT_RUNTIME=1"
+    "-s ASSERTIONS=1"
+    "-s WASM=1"
+    "-s USE_SDL=2"
+    "--preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets"
+  )
+
+  # Set the linker flags
+  string(JOIN " " EMSCRIPTEN_LINK_FLAGS_STR ${EMSCRIPTEN_LINK_FLAGS})
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${EMSCRIPTEN_LINK_FLAGS_STR}")
+
+  # Set output extension
   set(CMAKE_EXECUTABLE_SUFFIX .js)
 
   # Disable CUDA/Metal when building for web
