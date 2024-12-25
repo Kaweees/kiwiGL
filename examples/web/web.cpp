@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
   emscripten_set_main_loop_timing(EM_TIMING_RAF, 60);
 
   // Set up the main loop for Emscripten
-  emscripten_set_main_loop(mainLoop, 0, 1);
+  emscripten_set_main_loop(mainLoop, 0, true);
 #else
   // Traditional loop for native builds
   while (!g_display->shouldClose()) { mainLoop(); }
