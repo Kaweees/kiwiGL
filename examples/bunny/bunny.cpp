@@ -17,6 +17,11 @@ void mainLoop() {
     g_display->processInput();
     g_display->update();
     g_display->render();
+
+#ifdef __EMSCRIPTEN__
+    // Add a small delay to control frame rate
+    emscripten_sleep(16); // ~60 FPS
+#endif
   }
 }
 
@@ -31,10 +36,8 @@ int main(int argc, char** argv) {
   g_display->loadMesh("assets/bunny.obj");
 
 #ifdef __EMSCRIPTEN__
-  // Set up the main loop for Emscripten with proper timing
-  emscripten_set_main_loop(mainLoop, 0, true);
-  // Note: The second parameter (0) means use browser's requestAnimationFrame
-  // The third parameter (true) means simulate infinite loop
+  // Set up the main loop for Emscripten
+  emscripten_set_main_loop(mainLoop, 0, 1);
 #else
   // Traditional loop for native builds
   while (!g_display->shouldClose()) { mainLoop(); }
