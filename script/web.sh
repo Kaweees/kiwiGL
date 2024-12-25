@@ -27,11 +27,9 @@ emcmake cmake .. \
 # Build
 cmake --build . -j$(nproc)
 
-cd web
+# Copy web files
+cp ../target/release/*.wasm ../public/
+cp ../target/release/*.js ../public/
 
+cd ..
 ls -la
-
-# cp ../web/index.js ../target/release/
-
-# # Copy web files
-# cp ../web/index.html ../target/release/

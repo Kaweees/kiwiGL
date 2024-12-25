@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
   kiwigl::Display display(10000);
 #endif
   // Load the F-22 mesh
-  display.loadMesh("../assets/f22.obj");
+  display.loadMesh("../public/f22.obj");
 
   // Main graphics loop
   // Loop until window close button is pressed
