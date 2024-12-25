@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
   kiwigl::Display display(10000);
 #endif
   // Load the Stanford bunny mesh
-  display.loadMesh("/assets/bunny.obj");
+  display.loadMesh("assets/bunny.obj");
 
   // Main graphics loop
   // Loop until window close button is pressed
