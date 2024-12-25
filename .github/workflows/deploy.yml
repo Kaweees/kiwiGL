@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - main
+      - wasm
   pull_request:
 # The sequence of runs in this workflow:
 jobs:
