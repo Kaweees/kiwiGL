@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - main
+      - wasm
   pull_request:
 # The sequence of runs in this workflow:
 jobs:
@@ -20,12 +21,12 @@ jobs:
         with:
           submodules: true # Fetch submodules
           fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
-      - name: Set Up SDL 2
-        uses: libsdl-org/setup-sdl@main
-        with:
-          install-linux-dependencies: true
-          version: 2-latest
-          version-sdl-image: 2-latest
+      # - name: Set Up SDL 2
+      #   uses: libsdl-org/setup-sdl@main
+      #   with:
+      #     install-linux-dependencies: true
+      #     version: 2-latest
+      #     version-sdl-image: 2-latest
       - name: Build Project
         run: |
           ./script/build-web.sh
