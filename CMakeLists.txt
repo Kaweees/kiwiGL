@@ -37,7 +37,6 @@ if(NOT CUDA_FOUND AND APPLE)
   # endif()
 endif()
 
-
 # Library target
 add_library(
   ${PROJECT_NAME}
@@ -51,7 +50,6 @@ target_include_directories(
   $<INSTALL_INTERFACE:include>
 )
 
-
 # Optional builds
 option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_TESTS "Build tests" ON)
@@ -59,16 +57,20 @@ option(BENCHMARK "Build with benchmark mode" OFF)
 
 # Benchmark mode
 if(BENCHMARK)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE BENCHMARK_MODE)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE BENCHMARK_MODE)
 else()
-  # Find SDL2 package
-  find_package(SDL2 REQUIRED)
+  # Fetch SDL2
+  include(FetchContent)
+  FetchContent_Declare(
+    SDL2
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG "release-2.28.5"
+    GIT_PROGRESS TRUE
+  )
+  FetchContent_MakeAvailable(SDL2)
 
-  # Include SDL2 headers
-  include_directories(${SDL2_INCLUDE_DIRS})
-
-  # Link SDL2 libraries (corrected for INTERFACE library)
-  target_link_libraries(${PROJECT_NAME} INTERFACE ${SDL2_LIBRARIES})
+  # Link SDL2 libraries
+  target_link_libraries(${PROJECT_NAME} INTERFACE ${SDL2_LIBRARY})
 endif()
 
 # Examples
@@ -78,16 +80,15 @@ endif()
 
 # Tests
 if(BUILD_TESTS)
-    # Fetch GoogleTest
-    include(FetchContent)
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG "v1.15.2"
-        GIT_PROGRESS TRUE
-    )
-    FetchContent_MakeAvailable(googletest)
-    enable_testing()
-    add_subdirectory(tests)
+  # Fetch GoogleTest
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG "v1.15.2"
+    GIT_PROGRESS TRUE
+  )
+  FetchContent_MakeAvailable(googletest)
+  enable_testing()
+  add_subdirectory(tests)
 endif()
-
