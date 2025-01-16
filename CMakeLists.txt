@@ -69,8 +69,13 @@ else()
   )
   FetchContent_MakeAvailable(SDL2)
 
+  # Add SDL2 include directories
+  target_include_directories(${PROJECT_NAME} INTERFACE
+    ${SDL2_SOURCE_DIR}/include
+  )
+
   # Link SDL2 libraries
-  target_link_libraries(${PROJECT_NAME} INTERFACE ${SDL2_LIBRARY})
+  target_link_libraries(${PROJECT_NAME} INTERFACE SDL2::SDL2)
 endif()
 
 # Examples

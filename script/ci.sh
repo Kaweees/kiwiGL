@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Central script called by the CI
-# Usage: 
+# Usage:
 #    ci.sh {run_build|run_tests}
 
 #
@@ -35,7 +35,7 @@ _install_doctest() {
 # Function to build the project
 _build_impl() {
     cd "$REPO_DIR"
-    JOBS=4
+    JOBS=$(nproc)
     BUILD_TYPE=Release
     cmake -S test -B build -D CMAKE_BUILD_TYPE=${BUILD_TYPE}
     cmake --build build --config ${BUILD_TYPE} -j ${JOBS}
@@ -62,7 +62,7 @@ run_tests() {
 
 # API function to build the project
 run_build() {
-    _install_doctest
+    # _install_doctest
     _build_impl
 }
 
