@@ -14,6 +14,15 @@ if ! command -v emcmake &> /dev/null; then
     exit 1
 fi
 
+# Get CPU count based on OS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    CPU_COUNT=$(sysctl -n hw.ncpu)
+else
+    # Linux and others
+    CPU_COUNT=$(nproc)
+fi
+
 # Create build directory
 mkdir -p build
 cd build
@@ -24,13 +33,32 @@ emcmake cmake .. \
     -DBUILD_TESTS=OFF \
     -DCMAKE_BUILD_TYPE=Release
 
-# Build
-cmake --build . -j$(nproc)
+# Check if configuration was successful
+if [ $? -ne 0 ]; then
+    echo "CMake configuration failed. Please check SDL2 installation."
+    echo "You might need to install SDL2 for Emscripten with: emscripten/emsdk/upstream/emscripten/embuilder.py build sdl2"
+    exit 1
+fi
 
-# Copy web files
-cp ../target/release/*.wasm ../public/
-cp ../target/release/*.js ../public/
-cp ../target/release/*.data ../public/
+# Build
+cmake --build . -j${CPU_COUNT}
+
+# Check if build directory exists and create if needed
+mkdir -p ../public
+
+# Copy web files if they exist
+if [ -d "src" ]; then
+    # Find and copy WASM, JS and data files to the public directory
+    find src -name "*.wasm" -exec cp {} ../public/ \;
+    find src -name "*.js" -exec cp {} ../public/ \;
+    find src -name "*.data" -exec cp {} ../public/ \;
+else
+    # Alternative locations to search for output files
+    find . -name "*.wasm" -exec cp {} ../public/ \;
+    find . -name "*.js" -exec cp {} ../public/ \;
+    find . -name "*.data" -exec cp {} ../public/ \;
+fi
 
 cd ..
-ls -la
+echo "Build complete. Files in public directory:"
+ls -la public/
