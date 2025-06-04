@@ -7,7 +7,6 @@
 #include <stdlib.h>
 
 #include <memory>
-#include <string>
 
 #include "../core/constants.hpp"
 #include "../geometry/mesh.hpp"

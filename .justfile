@@ -33,7 +33,7 @@ clean:
 # Run code quality tools
 test:
   echo "Running tests..."
-  ./target/release/test_libray
+  ./target/release/test_library
 
 # Format the project
 format:

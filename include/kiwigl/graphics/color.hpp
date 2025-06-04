@@ -37,7 +37,7 @@ class Color {
     uint8_t alpha;
 
     // Linearly interpolate between two colors
-    Color lerp(const Color& other, float t) const {
+    template <typename T> Color lerp(const Color& other, T t) const {
       return Color(static_cast<uint8_t>(red + (other.red - red) * t),
                    static_cast<uint8_t>(green + (other.green - green) * t),
                    static_cast<uint8_t>(blue + (other.blue - blue) * t),

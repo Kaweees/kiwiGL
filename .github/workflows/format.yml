@@ -22,10 +22,10 @@
             fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
         - name: Make sure scripts/format.sh is executable
           run: |
-            chmod +x script/format.sh
+            chmod +x scripts/format.sh
         - name: Run clang-format
           run: |
-            ./script/format.sh format
+            ./scripts/format.sh format
         - name: Install clang-format
           run: sudo apt install clang-format
         - name: Commit changes
