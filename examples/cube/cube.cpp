@@ -28,8 +28,8 @@ int main(int argc, char** argv) {
 #else
   kiwigl::Display display(10000);
 #endif
-  // Load the F-22 mesh
-  display.loadMesh("./assets/f22.obj");
+  // Load the Cube mesh
+  display.loadMesh("./assets/cube.obj");
 
   // Main graphics loop
   // Loop until window close button is pressed

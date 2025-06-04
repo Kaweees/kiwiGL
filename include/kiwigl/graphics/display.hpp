@@ -63,13 +63,14 @@ class Display {
   public:
 #ifndef BENCHMARK_MODE
     // Constructor to initialize memory
-    Display() {
+    Display(const Vector3D& cameraPosition = Vector3D(0, 0, -5), const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
 #else
-    Display(uint32_t numOfFrames) {
+    Display(uint32_t numOfFrames, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
+            const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
 #endif
       // Initialize the camera
-      camera = Vector3D(0, 0, -5);
-      rotation = Vector3D(0, 0, 0);
+      camera = cameraPosition;
+      rotation = cameraRotation;
       rotationSpeed = Vector3D(0, 0, 0);
 #ifndef BENCHMARK_MODE
       fullScreen = true;

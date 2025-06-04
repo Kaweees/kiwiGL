@@ -13,7 +13,7 @@ default:
   @just --list
 
 # Run a package
-run *args='hello':
+run *args='f22':
   ./target/release/{{args}}
 
 # Build the project(Release or Debug)
@@ -33,7 +33,7 @@ clean:
 # Run code quality tools
 test:
   echo "Running tests..."
-  ./target/release/kiwicpp_tests
+  ./target/release/test_libray
 
 # Format the project
 format:
