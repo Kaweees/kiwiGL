@@ -19,12 +19,12 @@
 
 </div>
 
-<a href="https://github.com/Kaweees/kiwigl">
+<a href="https://github.com/Kaweees/kiwiGL">
   <img alt="C++ Logo" src="assets/img/cpp.svg" align="right" width="150">
 </a>
 
 <div align="left">
-  <h1><em><a href="https://github.com/Kaweees/kiwigl">~kiwigl</a></em></h1>
+  <h1><em><a href="https://github.com/Kaweees/kiwiGL">~kiwiGL</a></em></h1>
 </div>
 
 <!-- ABOUT THE PROJECT -->
@@ -36,6 +36,8 @@ A three-dimensional header-only graphics library written in C++13 and accelerate
 [![C++][C++-shield]][C++-url]
 [![CUDA][CUDA-shield]][CUDA-url]
 [![Apple][Apple-shield]][Apple-url]
+[![CMake][CMake-shield]][CMake-url]
+[![Codecov][Codecov-shield]][Codecov-url]
 [![GitHub Actions][github-actions-shield]][github-actions-url]
 
 <!-- PROJECT PREVIEW -->
@@ -64,8 +66,8 @@ To get a local copy of the project up and running on your machine, follow these 
 1. Clone the project repository
 
    ```sh
-   git clone https://github.com/Kaweees/kiwigl.git
-   cd kiwigl
+   git clone https://github.com/Kaweees/kiwiGL.git
+   cd kiwiGL
    ```
 
 2. Create a fresh build directory and navigate to it
@@ -127,7 +129,7 @@ To get a local copy of the project up and running on your machine, follow these 
 <!--
 ### Benchmarks
 
-Kiwigl is capable of rendering 3D scenes with thousands of triangles at interactive frame rates. The following benchmarks were conducted on a 2019 MacBook Pro with a 2.3 GHz 8-Core Intel Core i9 processor and 16 GB of RAM.
+KiwiGL is capable of rendering 3D scenes with thousands of triangles at interactive frame rates. The following benchmarks were conducted on a 2019 MacBook Pro with a 2.3 GHz 8-Core Intel Core i9 processor and 16 GB of RAM.
 
 | Benchmark | Description | Result |
 | --------- | ----------- | ------ |
@@ -139,14 +141,14 @@ Kiwigl is capable of rendering 3D scenes with thousands of triangles at interact
 
 ### Convention
 
-Kiwigl uses the following conventions:
+KiwiGL uses the following conventions:
 
 - [left-handed coordinate system](https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/geometry/coordinate-systems.html#:~:text=The%20differentiation%20between%20left%2Dhanded,a%20right%2Dhand%20coordinate%20system)
 - [counter-clockwise winding order](https://learnwebgl.brown37.net/model_data/model_volume.html#:~:text=Winding%20Order%20for%20a%20triangle,the%20front%20of%20the%20triangle.) for triangle vertices
 
 ### Keyboard Controls
 
-Kiwigl uses the following keyboard shortcuts:
+KiwiGL uses the following keyboard shortcuts:
 
 | Command Keybind | Command Description |
 | --------------- | ------------------- |
@@ -168,17 +170,17 @@ graphics/
 
 ## License
 
-The source code for kiwigl  is distributed under the terms of the GNU General Public License v3.0, as I firmly believe that collaborating on free and open-source software fosters innovations that mutually and equitably beneficial to both collaborators and users alike. See [`LICENSE`](./LICENSE) for details and more information.
+The source code for kiwiGL  is distributed under the terms of the GNU General Public License v3.0, as I firmly believe that collaborating on free and open-source software fosters innovations that mutually and equitably beneficial to both collaborators and users alike. See [`LICENSE`](./LICENSE) for details and more information.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/Kaweees/kiwigl.svg?style=for-the-badge
-[contributors-url]: https://github.com/Kaweees/kiwigl/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Kaweees/kiwigl.svg?style=for-the-badge
-[forks-url]: https://github.com/Kaweees/kiwigl/network/members
-[stars-shield]: https://img.shields.io/github/stars/Kaweees/kiwigl.svg?style=for-the-badge
-[stars-url]: https://github.com/Kaweees/kiwigl/stargazers
+[contributors-shield]: https://img.shields.io/github/contributors/Kaweees/kiwiGL.svg?style=for-the-badge
+[contributors-url]: https://github.com/Kaweees/kiwiGL/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Kaweees/kiwiGL.svg?style=for-the-badge
+[forks-url]: https://github.com/Kaweees/kiwiGL/network/members
+[stars-shield]: https://img.shields.io/github/stars/Kaweees/kiwiGL.svg?style=for-the-badge
+[stars-url]: https://github.com/Kaweees/kiwiGL/stargazers
 
 <!-- MARKDOWN SHIELD BAGDES & LINKS -->
 <!-- https://github.com/Ileriayo/markdown-badges -->
@@ -188,5 +190,9 @@ The source code for kiwigl  is distributed under the terms of the GNU General Pu
 [CUDA-url]: https://developer.nvidia.com/cuda-zone
 [Apple-shield]: https://img.shields.io/badge/metal-%23008080.svg?style=for-the-badge&logo=apple&logoColor=white&labelColor=222222&color=white
 [Apple-url]: https://developer.apple.com/metal/
+[CMake-shield]: https://img.shields.io/badge/CMake-%23008080.svg?style=for-the-badge&logo=cmake&logoColor=008FBA&labelColor=222222&color=008FBA
+[CMake-url]: https://cmake.org/
+[Codecov-shield]: https://img.shields.io/badge/codecov-%23008080.svg?style=for-the-badge&logo=codecov&logoColor=FF0077&labelColor=222222&color=FF0077
+[Codecov-url]: https://codecov.io/
 [github-actions-shield]: https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=2671E5&labelColor=222222&color=2671E5
 [github-actions-url]: https://github.com/features/actions
