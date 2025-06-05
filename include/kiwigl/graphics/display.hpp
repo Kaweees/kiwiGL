@@ -75,8 +75,8 @@ class Display {
       fullScreen = true;
       keyPressed = SDLK_UNKNOWN;
       prevTime = SDL_GetTicks();
-      // Initialize SDL
-      if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+      // Initialize SDL with only the required subsystems
+      if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0) {
         fprintf(stderr, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
