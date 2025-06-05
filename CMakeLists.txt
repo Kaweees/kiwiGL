@@ -1,6 +1,10 @@
-cmake_minimum_required(VERSION 3.14 FATAL_ERROR) # Set the minimum required version of CMake
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR) # Set the minimum required
+                                                 # version of CMake
 
-project(kiwigl VERSION 1.0.0 LANGUAGES CXX)
+project(
+  kiwigl
+  VERSION 1.0.0
+  LANGUAGES CXX)
 
 option(BUILD_WASM "Build for WebAssembly" OFF)
 option(BUILD_EXAMPLES "Build examples" ON)
@@ -58,67 +62,72 @@ else()
     message(STATUS "CUDA not found. Checking for Apple Metal support.")
   endif()
 
-  # Check for Apple Metal
-  if(NOT CUDA_FOUND AND APPLE)
-    # Set the SDK path
-    # set(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
-    # find_library(METAL_LIBRARY Metal)
-    # find_library(FOUNDATION_LIBRARY Foundation)
-    # if(METAL_LIBRARY AND FOUNDATION_LIBRARY)
-    #   set(METAL_FOUND TRUE)
-    #   target_compile_definitions(${PROJECT_NAME} PRIVATE USE_METAL)
-    #   message(STATUS "Apple Metal found. Building with Metal support.")
-    # else()
-    #   message(WARNING "Neither CUDA nor Apple Metal found. Building without GPU acceleration.")
-    # endif()
-  endif()
+# Check for Apple Metal (only if CUDA is not found)
+if(NOT CUDA_FOUND AND APPLE)
+  set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+  set(CMAKE_HAVE_THREADS_LIBRARY 1)
+  set(CMAKE_USE_WIN32_THREADS_INIT 0)
+  set(CMAKE_USE_PTHREADS_INIT 1)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  # Set the SDK path set(CMAKE_OSX_SYSROOT
+  # /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
+  # find_library(METAL_LIBRARY Metal) find_library(FOUNDATION_LIBRARY
+  # Foundation) if(METAL_LIBRARY AND FOUNDATION_LIBRARY) set(METAL_FOUND TRUE)
+  # target_compile_definitions(${PROJECT_NAME} PRIVATE USE_METAL) message(STATUS
+  # "Apple Metal found. Building with Metal support.") else() message(WARNING
+  # "Neither CUDA nor Apple Metal found. Building without GPU acceleration.")
+  # endif()
 endif()
 
-
 # Library target
-add_library(
-  ${PROJECT_NAME}
-  INTERFACE
-)
+add_library(${PROJECT_NAME} INTERFACE)
 
 target_include_directories(
   ${PROJECT_NAME}
-  INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>)
+
+# Optional builds
+option(BUILD_EXAMPLES "Build examples" ON)
+option(BUILD_TESTS "Build tests" ON)
+option(BENCHMARK "Build with benchmark mode" OFF)
 
 # Benchmark mode
 if(BENCHMARK)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE BENCHMARK_MODE)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE BENCHMARK_MODE)
 else()
-  # Find SDL2 package
-  find_package(SDL2 REQUIRED)
+  # Fetch SDL2
+  include(FetchContent)
+  FetchContent_Declare(
+    SDL2
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG "release-2.28.5"
+    GIT_PROGRESS TRUE)
+  FetchContent_MakeAvailable(SDL2)
 
-  # Include SDL2 headers
-  include_directories(${SDL2_INCLUDE_DIRS})
+  # Add SDL2 include directories
+  target_include_directories(${PROJECT_NAME}
+                             INTERFACE ${SDL2_SOURCE_DIR}/include)
 
-  # Link SDL2 libraries (corrected for INTERFACE library)
-  target_link_libraries(${PROJECT_NAME} INTERFACE ${SDL2_LIBRARIES})
+  # Link SDL2 libraries
+  target_link_libraries(${PROJECT_NAME} INTERFACE SDL2::SDL2)
 endif()
 
 # Examples
 if(BUILD_EXAMPLES)
-    add_subdirectory(examples)
+  add_subdirectory(examples)
 endif()
 
 # Tests
 if(BUILD_TESTS)
-    # Fetch GoogleTest
-    include(FetchContent)
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG "v1.15.2"
-        GIT_PROGRESS TRUE
-    )
-    FetchContent_MakeAvailable(googletest)
-    enable_testing()
-    add_subdirectory(tests)
+  # Fetch GoogleTest
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG "v1.15.2"
+    GIT_PROGRESS TRUE)
+  FetchContent_MakeAvailable(googletest)
+  enable_testing()
+  add_subdirectory(tests)
 endif()
-

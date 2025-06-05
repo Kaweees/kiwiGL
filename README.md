@@ -36,6 +36,8 @@ A three-dimensional header-only graphics library written in C++13 and accelerate
 [![C++][C++-shield]][C++-url]
 [![CUDA][CUDA-shield]][CUDA-url]
 [![Apple][Apple-shield]][Apple-url]
+[![CMake][CMake-shield]][CMake-url]
+[![Codecov][Codecov-shield]][Codecov-url]
 [![GitHub Actions][github-actions-shield]][github-actions-url]
 
 <!-- PROJECT PREVIEW -->
@@ -188,5 +190,9 @@ The source code for kiwigl  is distributed under the terms of the GNU General Pu
 [CUDA-url]: https://developer.nvidia.com/cuda-zone
 [Apple-shield]: https://img.shields.io/badge/metal-%23008080.svg?style=for-the-badge&logo=apple&logoColor=white&labelColor=222222&color=white
 [Apple-url]: https://developer.apple.com/metal/
+[CMake-shield]: https://img.shields.io/badge/CMake-%23008080.svg?style=for-the-badge&logo=cmake&logoColor=008FBA&labelColor=222222&color=008FBA
+[CMake-url]: https://cmake.org/
+[Codecov-shield]: https://img.shields.io/badge/codecov-%23008080.svg?style=for-the-badge&logo=codecov&logoColor=FF0077&labelColor=222222&color=FF0077
+[Codecov-url]: https://codecov.io/
 [github-actions-shield]: https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=2671E5&labelColor=222222&color=2671E5
 [github-actions-url]: https://github.com/features/actions
