@@ -24,12 +24,12 @@
 int main(int argc, char** argv) {
   // Initialization of display
 #ifndef BENCHMARK_MODE
-  kiwigl::Display display(kiwigl::Vector3D(0, 0, -0.25), kiwigl::Vector3D(M_PI, M_PI, 0));
+  kiwigl::Display display("KiwiGL Stanford Bunny Demo", kiwigl::Vector3D(0, 0, -0.25), kiwigl::Vector3D(M_PI, M_PI, 0));
 #else
   kiwigl::Display display(10000);
 #endif
   // Load the Stanford bunny mesh
-  display.loadMesh("./assets/bunny.obj");
+  display.loadMesh("./assets/bunny.mesh");
 
   // Main graphics loop
   // Loop until window close button is pressed

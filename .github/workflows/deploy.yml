@@ -6,8 +6,6 @@ on:
     branches:
       - master
       - main
-      - wasm
-      - need
   pull_request:
 # The sequence of runs in this workflow:
 jobs:
@@ -22,24 +20,14 @@ jobs:
         with:
           submodules: true # Fetch submodules
           fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
-      # - name: Set Up SDL 2
-      #   uses: libsdl-org/setup-sdl@main
-      #   with:
-      #     install-linux-dependencies: true
-      #     version: 2-latest
-      #     version-sdl-image: 2-latest
-      - name: Set Up Emscripten
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          version: latest
-          actions-cache-folder: 'emsdk-cache'
+      - name: Set up the environment
+        uses: ./.github/actions/setup-emscripten-env
       - run: emcc --version
       - name: Build Project
-        run: |
-          ./scripts/web.sh
+        run: just web
       - name: Deploy to gh-pages
         uses: crazy-max/ghaction-github-pages@v4
-        # if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
         with:
           # the output branch mentioned above
           target_branch: gh-pages

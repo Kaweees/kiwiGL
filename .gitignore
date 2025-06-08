@@ -70,3 +70,5 @@ CTestTestfile.cmake
 target/
 build/
 /.emscripten_cache
+
+!public/

@@ -32,10 +32,13 @@ web *build_type='Release':
   @cd build && emcmake cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}} -DBUILD_WASM=1
   @echo "Building the project..."
   @cd build && cmake --build . -j$(nproc)
+  @mkdir -p public/assets/
   @# Find and copy WASM, JS and data files to the public directory
   @find target/release/web -name "*.wasm" -exec cp {} ./public/ \;
   @find target/release/web -name "*.js" -exec cp {} ./public/ \;
   @find target/release/web -name "*.data" -exec cp {} ./public/ \;
+  @find assets/ -name "*.obj" -exec cp {} ./public/assets/ \;
+  @find assets/ -name "*.mesh" -exec cp {} ./public/assets/ \;
 
 # Remove build artifacts and non-essential files
 clean:

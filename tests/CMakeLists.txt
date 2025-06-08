@@ -16,4 +16,3 @@ foreach (name IN LISTS TESTS)
   )
   set_target_properties("${name}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/target/release/" OUTPUT_NAME "${name}")
 endforeach ()
-

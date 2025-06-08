@@ -3,27 +3,33 @@
 #include <iostream>
 #include <kiwigl/kiwigl.hpp>
 
+#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <emscripten/html5.h>
-
-// Global display object since the loop function needs access
-kiwigl::Display* g_display = nullptr;
+#endif
 
 // The loop function that will be called by Emscripten
-void mainLoop() {
-  if (g_display) {
-    g_display->processInput();
-    g_display->update();
-    g_display->render();
+bool mainLoop(kiwigl::Display* display) {
+  if (display) {
+    display->processInput();
+    display->update();
+    if (display->shouldClose()) {
+#ifdef __EMSCRIPTEN__
+      emscripten_cancel_main_loop();
+#endif
+      return false;
+    } else {
+      display->render();
+      return true;
+    }
+  } else {
+    return false;
   }
 }
 
-// Cleanup function to be called when the application exits
-void cleanup() {
-  if (g_display) {
-    delete g_display;
-    g_display = nullptr;
-  }
+// Wrapper function for emscripten_set_main_loop_arg
+void runMainLoop(void* display) {
+  mainLoop((kiwigl::Display*)display); // mainLoop handles calling emscripten_cancel_main_loop
 }
 
 //------------------------------------------------------------------------------------
@@ -31,19 +37,19 @@ void cleanup() {
 //------------------------------------------------------------------------------------
 int main(int argc, char** argv) {
   // Initialization of display
-  g_display = new kiwigl::Display("KiwiGL Web Demo");
+  kiwigl::Display* display = new kiwigl::Display("KiwiGL WebAssembly Demo");
+
+  // kiwigl::Display* display = static_cast<kiwigl::Display*>(arg);
 
   // Load the Stanford bunny mesh
-  g_display->loadMesh("assets/bunny.obj");
+  display->loadMesh("./assets/cube.mesh");
 
-  // Register cleanup function to be called on exit
-  atexit(cleanup);
-
-  // Set the timing mode before setting up the main loop
-  emscripten_set_main_loop_timing(EM_TIMING_RAF, 1);
-
-  // Set up the main loop for Emscripten
-  emscripten_set_main_loop(mainLoop, 0, true);
-
+#ifdef __EMSCRIPTEN__
+  emscripten_set_main_loop_arg(runMainLoop, (void*)display, 0, true);
+#else
+  while (mainLoop(display)) { SDL_Delay(0); };
+#endif
+  delete display;
+  display = nullptr;
   return 0;
 }

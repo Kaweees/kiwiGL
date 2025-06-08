@@ -47,7 +47,6 @@ if(BUILD_WASM)
     "-sALLOW_MEMORY_GROWTH=1"
     "-sASYNCIFY"
     "-O2"
-    "--preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets"
     "-sNO_EXIT_RUNTIME=1"
     "-sASSERTIONS=1")
 

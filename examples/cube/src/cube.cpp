@@ -24,12 +24,12 @@
 int main(int argc, char** argv) {
   // Initialization of display
 #ifndef BENCHMARK_MODE
-  kiwigl::Display display;
+  kiwigl::Display display("KiwiGL Cube Demo");
 #else
   kiwigl::Display display(10000);
 #endif
   // Load the Cube mesh
-  display.loadMesh("./assets/cube.obj");
+  display.loadMesh("./assets/cube.mesh");
 
   // Main graphics loop
   // Loop until window close button is pressed

@@ -1,0 +1,28 @@
+---
+name: "Setup Emscripten Environment"
+description: "Set up Emscripten environment for the given Emscripten version"
+# The inputs for this action:
+inputs:
+  emscripten-version:
+    description: "Emscripten version to use"
+    required: true
+    default: "latest"
+  just-version:
+    description: "just version to use"
+    required: true
+    default: "1.5.0"
+
+# The sequence of runs in this action:
+runs:
+  using: "composite"
+  steps:
+    - name: Set Up Emscripten
+      uses: mymindstorm/setup-emsdk@v14
+      with:
+        version: ${{ inputs.emscripten-version }}
+        actions-cache-folder: '.emscripten_cache'
+    - name: Setup just
+      uses: extractions/setup-just@v2
+      with:
+        version: ${{ inputs.just-version }}
+
