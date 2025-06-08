@@ -30,7 +30,7 @@ build *build_type='Release':
 # Build the project for the web
 web *build_type='Release':
   @mkdir -p build
-  @if [ -n "${EM_CACHE-}" ]; then mkdir -p "$EM_CACHE"; fi
+  @if [ -n "${EM_CACHE-}" ]; then mkdir -p "$EM_CACHE" && mkdir -p "$EM_CACHE/tmp"; fi
   @echo "Configuring the build system..."
   @cd build && emcmake cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}} -DBUILD_WASM=1
   @echo "Building the project..."

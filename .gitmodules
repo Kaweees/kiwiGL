@@ -1,0 +1,3 @@
+[submodule "docs/doxygen/m.css"]
+	path = docs/doxygen/m.css
+	url = https://github.com/mosra/m.css.git

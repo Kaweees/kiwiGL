@@ -52,9 +52,6 @@ class Display {
     std::unique_ptr<FrameBuffer> frameBuffer;
     Mesh mesh;
     std::vector<Triangle> projectedTriangles;
-    Face* d_faces;
-    Vector3D* d_vertices;
-    Triangle* d_projectedTriangles;
 
     Vector3D camera;
     Vector3D rotation;
@@ -62,7 +59,7 @@ class Display {
   public:
 #ifndef BENCHMARK_MODE
     // Constructor to initialize memory
-    Display(const std::string& title, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
+    Display(const std::string& title, bool fullscreen = false, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
             const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
 #else
     Display(uint32_t numOfFrames, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
@@ -73,7 +70,7 @@ class Display {
       rotation = cameraRotation;
       rotationSpeed = Vector3D(0, 0, 0);
 #ifndef BENCHMARK_MODE
-      fullScreen = true;
+      fullScreen = fullscreen;
       keyPressed = SDLK_UNKNOWN;
       prevTime = SDL_GetTicks();
       // Initialize SDL with only the required subsystems
@@ -95,12 +92,11 @@ class Display {
       // Initialize the frame buffer
       frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
 
-      // Initialize the CUDA device pointers
-      d_faces = nullptr;
-      d_vertices = nullptr;
-      d_projectedTriangles = nullptr;
-
 #ifdef __CUDA__
+      // Initialize the CUDA device pointers
+      Face* d_faces = nullptr;
+      Vector3D* d_vertices = nullptr;
+      Triangle* d_projectedTriangles = nullptr;
       InitalizeCuda();
 #elif __METAL__
       InitalizeMetal();
@@ -137,21 +133,22 @@ class Display {
 
     // Destructor to free memory
     ~Display() {
-      // Free the frame buffer
-      frameBuffer.reset();
-
-      // Free the window
 #ifndef BENCHMARK_MODE
-      SDL_DestroyWindow(window);
-      window = nullptr;
-
-      // Free the renderer
-      SDL_DestroyRenderer(renderer);
-
       // Free the texture
-      SDL_DestroyTexture(texture);
-      texture = nullptr;
-
+      if (texture != nullptr) {
+        SDL_DestroyTexture(texture);
+        texture = nullptr;
+      }
+      // Free the renderer
+      if (renderer != nullptr) {
+        SDL_DestroyRenderer(renderer);
+        renderer = nullptr;
+      }
+      // Free the window
+      if (window != nullptr) {
+        SDL_DestroyWindow(window);
+        window = nullptr;
+      }
       // Quit SDL subsystems
       SDL_Quit();
 #endif

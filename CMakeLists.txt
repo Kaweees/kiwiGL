@@ -77,7 +77,7 @@ else()
       target_link_libraries(
         ${PROJECT_NAME} INTERFACE "-framework Metal" "-framework Foundation"
                                   "-framework QuartzCore" "-framework MetalKit")
-      # add_compile_definitions("__METAL__")
+      add_compile_definitions("__METAL__")
     else()
       message(STATUS "Apple Metal not found. Building without Metal support")
     endif()
