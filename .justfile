@@ -4,6 +4,7 @@
 
 alias r := run
 alias b := build
+alias w := web
 alias c := clean
 alias t := test
 alias f := format
@@ -24,11 +25,24 @@ build *build_type='Release':
   @echo "Building the project..."
   @cd build && cmake --build . -j$(nproc)
 
+# Build the project for the web
+web *build_type='Release':
+  @mkdir -p build
+  @echo "Configuring the build system..."
+  @cd build && emcmake cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}} -DBUILD_WASM=1
+  @echo "Building the project..."
+  @cd build && cmake --build . -j$(nproc)
+  @# Find and copy WASM, JS and data files to the public directory
+  @find target/release/web -name "*.wasm" -exec cp {} ./public/ \;
+  @find target/release/web -name "*.js" -exec cp {} ./public/ \;
+  @find target/release/web -name "*.data" -exec cp {} ./public/ \;
+
 # Remove build artifacts and non-essential files
 clean:
   @echo "Cleaning..."
   @rm -rf build
   @rm -rf target
+  @rm -rf .emscripten_cache
 
 # Run code quality tools
 test:

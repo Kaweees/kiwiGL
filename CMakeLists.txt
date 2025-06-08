@@ -31,22 +31,25 @@ if(BUILD_WASM)
   if(NOT DEFINED EMSCRIPTEN)
     message(FATAL_ERROR "BUILD_WASM requires using Emscripten CMake toolchain")
   endif()
+  add_compile_definitions("__EMSCRIPTEN__")
 
   # WebAssembly specific settings
-  set(EMSCRIPTEN_LINK_FLAGS
-      "-s ALLOW_MEMORY_GROWTH=1"
-      "-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
-      "-s EXPORTED_FUNCTIONS=['_main']"
-      "-s NO_EXIT_RUNTIME=1"
-      "-s ASSERTIONS=1"
-      "-s WASM=1"
-      "-s USE_SDL=2"
-      "--preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets")
-
-  # Set the linker flags
-  string(JOIN " " EMSCRIPTEN_LINK_FLAGS_STR ${EMSCRIPTEN_LINK_FLAGS})
-  set(CMAKE_EXE_LINKER_FLAGS
-      "${CMAKE_EXE_LINKER_FLAGS} ${EMSCRIPTEN_LINK_FLAGS_STR}")
+  target_link_options(
+    ${PROJECT_NAME}
+    INTERFACE
+    "-sMODULARIZE=1"
+    "-sEXPORT_NAME='Main'"
+    "-sINVOKE_RUN=0"
+    "-sDISABLE_DEPRECATED_FIND_EVENT_TARGET_BEHAVIOR=0"
+    "-sEXPORTED_FUNCTIONS=['_main']"
+    "-sEXPORTED_RUNTIME_METHODS=['callMain', 'ccall', 'cwrap']"
+    "-sFORCE_FILESYSTEM=1"
+    "-sALLOW_MEMORY_GROWTH=1"
+    "-sASYNCIFY"
+    "-O2"
+    "--preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets"
+    "-sNO_EXIT_RUNTIME=1"
+    "-sASSERTIONS=1")
 
   # Set output extension
   set(CMAKE_EXECUTABLE_SUFFIX .js)
@@ -77,10 +80,8 @@ else()
       message(STATUS "Apple Metal not found. Building without Metal support")
     endif()
 
-    # set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-    # set(CMAKE_HAVE_THREADS_LIBRARY 1)
-    # set(CMAKE_USE_WIN32_THREADS_INIT 0)
-    # set(CMAKE_USE_PTHREADS_INIT 1)
+    # set(CMAKE_THREAD_LIBS_INIT "-lpthread") set(CMAKE_HAVE_THREADS_LIBRARY 1)
+    # set(CMAKE_USE_WIN32_THREADS_INIT 0) set(CMAKE_USE_PTHREADS_INIT 1)
     # set(THREADS_PREFER_PTHREAD_FLAG ON)
   else()
     if(WIN32)

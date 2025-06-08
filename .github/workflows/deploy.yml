@@ -36,7 +36,7 @@ jobs:
       - run: emcc --version
       - name: Build Project
         run: |
-          ./script/web.sh
+          ./scripts/web.sh
       - name: Deploy to gh-pages
         uses: crazy-max/ghaction-github-pages@v4
         # if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'

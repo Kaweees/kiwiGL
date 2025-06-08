@@ -69,3 +69,4 @@ CTestTestfile.cmake
 .cache/
 target/
 build/
+/.emscripten_cache
