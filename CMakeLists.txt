@@ -131,7 +131,7 @@ if(BUILD_EXAMPLES)
 endif()
 
 # Tests
-if(BUILD_TESTS)
+if(NOT BUILD_WASM AND BUILD_TESTS)
   # Fetch GoogleTest
   FetchContent_Declare(
     googletest

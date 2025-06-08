@@ -31,7 +31,7 @@ void cleanup() {
 //------------------------------------------------------------------------------------
 int main(int argc, char** argv) {
   // Initialization of display
-  g_display = new kiwigl::Display();
+  g_display = new kiwigl::Display("KiwiGL Web Demo");
 
   // Load the Stanford bunny mesh
   g_display->loadMesh("assets/bunny.obj");

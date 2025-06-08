@@ -62,7 +62,8 @@ class Display {
   public:
 #ifndef BENCHMARK_MODE
     // Constructor to initialize memory
-    Display(const Vector3D& cameraPosition = Vector3D(0, 0, -5), const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
+    Display(const std::string& title, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
+            const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
 #else
     Display(uint32_t numOfFrames, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
             const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
@@ -107,7 +108,7 @@ class Display {
 
 #ifndef BENCHMARK_MODE
       // Initialize the SDL window
-      window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
+      window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
                                 frameBuffer->getHeight(), fullScreen ? SDL_WINDOW_BORDERLESS : SDL_WINDOW_SHOWN);
       if (window == nullptr) {
         fprintf(stderr, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -176,7 +177,8 @@ class Display {
     // Method to update the display
     void update() {
 #ifndef BENCHMARK_MODE
-      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
+      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
+        ;
       prevTime = SDL_GetTicks();
 #endif
 
