@@ -6,6 +6,8 @@ alias r := run
 alias b := build
 alias w := web
 alias c := clean
+alias ch := check
+alias d := docs
 alias t := test
 alias f := format
 
@@ -28,6 +30,7 @@ build *build_type='Release':
 # Build the project for the web
 web *build_type='Release':
   @mkdir -p build
+  @if [ -n "${EM_CACHE-}" ]; then mkdir -p "$EM_CACHE"; fi
   @echo "Configuring the build system..."
   @cd build && emcmake cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}} -DBUILD_WASM=1
   @echo "Building the project..."
@@ -45,12 +48,17 @@ clean:
   @echo "Cleaning..."
   @rm -rf build
   @rm -rf target
-  @rm -rf .emscripten_cache
+  @if [ -n "${EM_CACHE-}" ]; then rm -rf "$EM_CACHE"; fi
+
+# Run code quality tools
+check:
+  @echo "Running code quality tools..."
+  @cppcheck --enable=all --suppress=missingInclude --suppress=unusedFunction --error-exitcode=1 include/kiwigl
 
 # Run code quality tools
 test:
   @echo "Running tests..."
-  @./target/release/kiwicpp_tests
+  @./target/release/tests/test_library
 
 # Format the project
 format:
@@ -62,3 +70,9 @@ format:
 # Generate documentation
 docs:
   @echo "Generating documentation..."
+  rm -rf website
+  ./docs/doxygen/m.css/documentation/doxygen.py --debug docs/doxygen/conf.py
+  mkdir website
+  cp -r docs/doxygen/html/* website
+  cp -r docs/images website
+  rm -rf docs/doxygen/latex docs/doxygen/xml docs/doxygen/html docs/doxygen/__pycache__

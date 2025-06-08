@@ -7,16 +7,18 @@ project(
   LANGUAGES CXX)
 
 option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_TESTS "Build tests" OFF)
 option(BENCHMARK "Build with benchmark mode" OFF)
-
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 # Library target
 add_library(${PROJECT_NAME} INTERFACE)
+
+# Set C++ standard
+set_target_properties(
+  ${PROJECT_NAME}
+  PROPERTIES CMAKE_CXX_STANDARD_REQUIRED ON
+             CMAKE_CXX_STANDARD 17
+             CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 target_include_directories(
   ${PROJECT_NAME}
@@ -62,8 +64,9 @@ else()
     if(METAL_FRAMEWORK AND METALKIT_FRAMEWORK)
       message(STATUS "Apple Metal found. Building with Metal support")
       enable_language(OBJCXX)
-      set(CMAKE_OBJCXX_STANDARD 20)
-      set(CMAKE_OBJCXX_STANDARD_REQUIRED ON)
+      set_target_properties(
+        ${PROJECT_NAME} PROPERTIES CMAKE_OBJCXX_STANDARD_REQUIRED ON
+                                   CMAKE_OBJCXX_STANDARD 20)
       # Fetch Metal-cpp
       FetchContent_Declare(
         metal-cpp
@@ -74,14 +77,14 @@ else()
       target_link_libraries(
         ${PROJECT_NAME} INTERFACE "-framework Metal" "-framework Foundation"
                                   "-framework QuartzCore" "-framework MetalKit")
-      add_compile_definitions("__METAL__")
+      # add_compile_definitions("__METAL__")
     else()
       message(STATUS "Apple Metal not found. Building without Metal support")
     endif()
-
-    # set(CMAKE_THREAD_LIBS_INIT "-lpthread") set(CMAKE_HAVE_THREADS_LIBRARY 1)
-    # set(CMAKE_USE_WIN32_THREADS_INIT 0) set(CMAKE_USE_PTHREADS_INIT 1)
-    # set(THREADS_PREFER_PTHREAD_FLAG ON)
+    set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+    set(CMAKE_HAVE_THREADS_LIBRARY 1)
+    set(CMAKE_USE_PTHREADS_INIT 1)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
   else()
     if(WIN32)
       # Forcing MSVC to use utf-8 encoding
@@ -93,7 +96,11 @@ else()
     if(CMAKE_CUDA_COMPILER)
       message(STATUS "CUDA found. Building with CUDA support")
       enable_language(CUDA)
-      set(CMAKE_CUDA_STANDARD 14)
+      set_target_properties(
+        ${PROJECT_NAME}
+        PROPERTIES CMAKE_CUDA_STANDARD 17
+                   CMAKE_CUDA_STANDARD_REQUIRED ON
+                   CMAKE_CUDA_SEPARABLE_COMPILATION ON)
       find_package(CUDA REQUIRED)
       include_directories(${CUDA_INCLUDE_DIRS})
       add_compile_definitions("__CUDA__")
@@ -112,7 +119,7 @@ else()
   FetchContent_Declare(
     SDL2
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG "release-2.28.5"
+    GIT_TAG "release-2.32.8"
     GIT_PROGRESS TRUE)
   FetchContent_MakeAvailable(SDL2)
 

@@ -36,6 +36,7 @@ A three-dimensional header-only graphics library written in C++13 and accelerate
 [![C++][C++-shield]][C++-url]
 [![CUDA][CUDA-shield]][CUDA-url]
 [![Apple][Apple-shield]][Apple-url]
+[![WebAssembly][WebAssembly-shield]][webassembly-url]
 [![CMake][CMake-shield]][CMake-url]
 [![Codecov][Codecov-shield]][Codecov-url]
 [![GitHub Actions][github-actions-shield]][github-actions-url]
@@ -190,6 +191,8 @@ The source code for kiwigl  is distributed under the terms of the GNU General Pu
 [CUDA-url]: https://developer.nvidia.com/cuda-zone
 [Apple-shield]: https://img.shields.io/badge/metal-%23008080.svg?style=for-the-badge&logo=apple&logoColor=white&labelColor=222222&color=white
 [Apple-url]: https://developer.apple.com/metal/
+[WebAssembly-shield]: https://img.shields.io/badge/WebAssembly-20232A?style=for-the-badge&logo=WebAssembly&logoColor=654FF0&labelColor=222222&color=654FF0
+[webassembly-url]: https://webassembly.org/
 [CMake-shield]: https://img.shields.io/badge/CMake-%23008080.svg?style=for-the-badge&logo=cmake&logoColor=008FBA&labelColor=222222&color=008FBA
 [CMake-url]: https://cmake.org/
 [Codecov-shield]: https://img.shields.io/badge/codecov-%23008080.svg?style=for-the-badge&logo=codecov&logoColor=FF0077&labelColor=222222&color=FF0077

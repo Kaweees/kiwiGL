@@ -16,7 +16,7 @@
 
 #ifdef __CUDA__
 #include "display.cuh"
-#elif USE_METAL
+#elif __METAL__
 #include "display.metal"
 #endif
 
@@ -102,7 +102,7 @@ class Display {
 
 #ifdef __CUDA__
       InitalizeCuda();
-#elif USE_METAL
+#elif __METAL__
       InitalizeMetal();
 #endif
 
@@ -183,7 +183,7 @@ class Display {
 
 #ifdef __CUDA__
       LaunchCuda(frameBuffer->getWidth(), frameBuffer->getHeight());
-#elif USE_METAL
+#elif __METAL__
       LaunchMetal();
 #else
   for (int i = 0; i < mesh.faces.size(); i++) {
@@ -283,7 +283,7 @@ class Display {
 
     // Method to launch CUDA
     virtual void LaunchCuda(int width, int height);
-#elif USE_METAL
+#elif __METAL__
     // Method to initialize Metal
     virtual void InitalizeMetal();
 

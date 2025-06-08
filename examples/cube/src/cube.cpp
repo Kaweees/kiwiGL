@@ -4,7 +4,7 @@
 #include <iostream>
 #include <kiwigl/kiwigl.hpp>
 
-#ifdef USE_METAL
+#ifdef __METAL__
 #include <cassert>
 
 #define NS_PRIVATE_IMPLEMENTATION
