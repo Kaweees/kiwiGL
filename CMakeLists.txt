@@ -6,7 +6,6 @@ project(
   VERSION 1.0.0
   LANGUAGES CXX)
 
-option(BUILD_WASM "Build for WebAssembly" OFF)
 option(BUILD_EXAMPLES "Build examples" ON)
 option(BUILD_TESTS "Build tests" ON)
 option(BENCHMARK "Build with benchmark mode" OFF)
@@ -16,11 +15,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-if(WIN32)
-  # Forcing MSVC to use utf-8 encoding
-  add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
-  add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
-endif(WIN32)
+# Library target
+add_library(${PROJECT_NAME} INTERFACE)
+
+target_include_directories(
+  ${PROJECT_NAME}
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>)
+
+include(CheckLanguage)
+include(FetchContent)
 
 if(BUILD_WASM)
   # Ensure we're using Emscripten compiler
@@ -46,58 +50,58 @@ if(BUILD_WASM)
 
   # Set output extension
   set(CMAKE_EXECUTABLE_SUFFIX .js)
-
-  # Disable CUDA/Metal when building for web
-  set(CUDA_FOUND FALSE)
-  set(METAL_FOUND FALSE)
-  set(BUILD_TESTS FALSE)
 else()
-  include(CheckLanguage)
-  # Check for CUDA
-  check_language(CUDA)
-  if(CMAKE_CUDA_COMPILER)
-    enable_language(CUDA)
-    find_package(CUDA REQUIRED)
-    include_directories(${CUDA_INCLUDE_DIRS})
-    set(CMAKE_CUDA_STANDARD 14)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_CUDA)
-    set(CUDA_FOUND TRUE)
-    message(STATUS "CUDA found. Building with CUDA support.")
-  else()
-    set(CUDA_FOUND FALSE)
-    message(STATUS "CUDA not found. Checking for Apple Metal support.")
-  endif()
+  # Metal Support (macOS/iOS)
+  if(APPLE)
+    find_library(METAL_FRAMEWORK Metal)
+    find_library(METALKIT_FRAMEWORK MetalKit)
+    find_library(FOUNDATION_FRAMEWORK Foundation)
 
-  # Check for Apple Metal (only if CUDA is not found)
-  if(NOT CUDA_FOUND AND APPLE)
-    set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-    set(CMAKE_HAVE_THREADS_LIBRARY 1)
-    set(CMAKE_USE_WIN32_THREADS_INIT 0)
-    set(CMAKE_USE_PTHREADS_INIT 1)
-    set(THREADS_PREFER_PTHREAD_FLAG ON)
-    # Set the SDK path set(CMAKE_OSX_SYSROOT
-    # /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
-    # find_library(METAL_LIBRARY Metal) find_library(FOUNDATION_LIBRARY
-    # Foundation) if(METAL_LIBRARY AND FOUNDATION_LIBRARY) set(METAL_FOUND TRUE)
-    # target_compile_definitions(${PROJECT_NAME} PRIVATE USE_METAL)
-    # message(STATUS "Apple Metal found. Building with Metal support.") else()
-    # message(WARNING "Neither CUDA nor Apple Metal found. Building without GPU
-    # acceleration.")
+    if(METAL_FRAMEWORK AND METALKIT_FRAMEWORK)
+      message(STATUS "Apple Metal found. Building with Metal support")
+      enable_language(OBJCXX)
+      set(CMAKE_OBJCXX_STANDARD 20)
+      set(CMAKE_OBJCXX_STANDARD_REQUIRED ON)
+      # Fetch Metal-cpp
+      FetchContent_Declare(
+        metal-cpp
+        GIT_REPOSITORY https://github.com/rizajin/metal-cpp.git
+        GIT_TAG "main"
+        GIT_PROGRESS TRUE)
+      FetchContent_MakeAvailable(metal-cpp)
+      target_link_libraries(
+        ${PROJECT_NAME} INTERFACE "-framework Metal" "-framework Foundation"
+                                  "-framework QuartzCore" "-framework MetalKit")
+      add_compile_definitions("__METAL__")
+    else()
+      message(STATUS "Apple Metal not found. Building without Metal support")
+    endif()
+
+    # set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+    # set(CMAKE_HAVE_THREADS_LIBRARY 1)
+    # set(CMAKE_USE_WIN32_THREADS_INIT 0)
+    # set(CMAKE_USE_PTHREADS_INIT 1)
+    # set(THREADS_PREFER_PTHREAD_FLAG ON)
+  else()
+    if(WIN32)
+      # Forcing MSVC to use utf-8 encoding
+      add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+      add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+    endif(WIN32)
+
+    check_language(CUDA)
+    if(CMAKE_CUDA_COMPILER)
+      message(STATUS "CUDA found. Building with CUDA support")
+      enable_language(CUDA)
+      set(CMAKE_CUDA_STANDARD 14)
+      find_package(CUDA REQUIRED)
+      include_directories(${CUDA_INCLUDE_DIRS})
+      add_compile_definitions("__CUDA__")
+    else()
+      message(STATUS "CUDA not found. Building without CUDA support")
+    endif()
   endif()
 endif()
-
-# Library target
-add_library(${PROJECT_NAME} INTERFACE)
-
-target_include_directories(
-  ${PROJECT_NAME}
-  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<INSTALL_INTERFACE:include>)
-
-# Optional builds
-option(BUILD_EXAMPLES "Build examples" ON)
-option(BUILD_TESTS "Build tests" ON)
-option(BENCHMARK "Build with benchmark mode" OFF)
 
 # Benchmark mode
 if(BENCHMARK)
@@ -128,7 +132,6 @@ endif()
 # Tests
 if(BUILD_TESTS)
   # Fetch GoogleTest
-  include(FetchContent)
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git

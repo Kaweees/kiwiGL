@@ -14,7 +14,7 @@
 #include "../geometry/vector.hpp"
 #include "../graphics/frame_buffer.hpp"
 
-#ifdef USE_CUDA
+#ifdef __CUDA__
 #include "display.cuh"
 #elif USE_METAL
 #include "display.metal"
@@ -99,7 +99,7 @@ class Display {
       d_vertices = nullptr;
       d_projectedTriangles = nullptr;
 
-#ifdef USE_CUDA
+#ifdef __CUDA__
       InitalizeCuda();
 #elif USE_METAL
       InitalizeMetal();
@@ -176,11 +176,12 @@ class Display {
     // Method to update the display
     void update() {
 #ifndef BENCHMARK_MODE
-      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
+      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
+        ;
       prevTime = SDL_GetTicks();
 #endif
 
-#ifdef USE_CUDA
+#ifdef __CUDA__
       LaunchCuda(frameBuffer->getWidth(), frameBuffer->getHeight());
 #elif USE_METAL
       LaunchMetal();
@@ -273,7 +274,7 @@ class Display {
 #endif
     }
 
-#ifdef USE_CUDA
+#ifdef __CUDA__
     // Method to initialize CUDA
     virtual void InitalizeCuda();
 
