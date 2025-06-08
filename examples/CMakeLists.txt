@@ -1,4 +1,4 @@
-add_subdirectory(web)
 add_subdirectory(bunny)
 add_subdirectory(cube)
 add_subdirectory(f22)
+add_subdirectory(web)

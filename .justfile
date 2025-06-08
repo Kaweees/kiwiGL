@@ -13,34 +13,35 @@ default:
   @just --list
 
 # Run a package
-run *args='f22':
-  ./target/release/{{args}}
+run *package='f22':
+  @./target/release/{{package}}
 
-# Build the project(Release or Debug)
-build *args='Release':
-  mkdir -p build
-  echo "Configuring the build system..."
-  cd build && cmake -S .. -B . -DCMAKE_BUILD_TYPE={{args}}
-  echo "Building the project..."
-  cd build && cmake --build .
+# Build the project
+build *build_type='Release':
+  @mkdir -p build
+  @echo "Configuring the build system..."
+  @cd build && cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}}
+  @echo "Building the project..."
+  @cd build && cmake --build . -j$(nproc)
 
-# Clean the project
+# Remove build artifacts and non-essential files
 clean:
-  echo "Cleaning build directory..."
-  rm -rf build
-  rm -rf target
+  @echo "Cleaning..."
+  @rm -rf build
+  @rm -rf target
 
 # Run code quality tools
 test:
-  echo "Running tests..."
-  ./target/release/test_library
+  @echo "Running tests..."
+  @./target/release/kiwicpp_tests
 
 # Format the project
 format:
-  chmod +x ./scripts/format.sh
-  ./scripts/format.sh format
-  cmake-format -i CMakeLists.txt
+  @echo "Formatting..."
+  @chmod +x ./scripts/format.sh
+  @./scripts/format.sh format
+  @cmake-format -i CMakeLists.txt
 
 # Generate documentation
 docs:
-  echo "Generating documentation..."
+  @echo "Generating documentation..."

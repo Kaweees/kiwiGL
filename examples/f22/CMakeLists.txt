@@ -1,7 +1,13 @@
 set(EXECUTABLE_NAME f22)
 
-add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_NAME}.cpp)
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${PROJECT_NAME} SDL2::SDL2)
+file(GLOB_RECURSE PROJECT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE PROJECT_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
+message(STATUS "PROJECT_SRCS: ${PROJECT_SRCS}")
+message(STATUS "PROJECT_INCLUDES: ${PROJECT_INCLUDES}")
+
+add_executable(${EXECUTABLE_NAME} ${PROJECT_SRCS})
+target_include_directories(${EXECUTABLE_NAME} PUBLIC ${PROJECT_INCLUDES})
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${PROJECT_NAME})
 
 # Setting our output directory
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES

@@ -16,6 +16,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+if(WIN32)
+  # Forcing MSVC to use utf-8 encoding
+  add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+  add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endif(WIN32)
+
 if(BUILD_WASM)
   # Ensure we're using Emscripten compiler
   if(NOT DEFINED EMSCRIPTEN)
@@ -24,19 +30,19 @@ if(BUILD_WASM)
 
   # WebAssembly specific settings
   set(EMSCRIPTEN_LINK_FLAGS
-    "-s ALLOW_MEMORY_GROWTH=1"
-    "-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
-    "-s EXPORTED_FUNCTIONS=['_main']"
-    "-s NO_EXIT_RUNTIME=1"
-    "-s ASSERTIONS=1"
-    "-s WASM=1"
-    "-s USE_SDL=2"
-    "--preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets"
-  )
+      "-s ALLOW_MEMORY_GROWTH=1"
+      "-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
+      "-s EXPORTED_FUNCTIONS=['_main']"
+      "-s NO_EXIT_RUNTIME=1"
+      "-s ASSERTIONS=1"
+      "-s WASM=1"
+      "-s USE_SDL=2"
+      "--preload-file ${CMAKE_SOURCE_DIR}/public/assets@/assets")
 
   # Set the linker flags
   string(JOIN " " EMSCRIPTEN_LINK_FLAGS_STR ${EMSCRIPTEN_LINK_FLAGS})
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${EMSCRIPTEN_LINK_FLAGS_STR}")
+  set(CMAKE_EXE_LINKER_FLAGS
+      "${CMAKE_EXE_LINKER_FLAGS} ${EMSCRIPTEN_LINK_FLAGS_STR}")
 
   # Set output extension
   set(CMAKE_EXECUTABLE_SUFFIX .js)
@@ -62,21 +68,22 @@ else()
     message(STATUS "CUDA not found. Checking for Apple Metal support.")
   endif()
 
-# Check for Apple Metal (only if CUDA is not found)
-if(NOT CUDA_FOUND AND APPLE)
-  set(CMAKE_THREAD_LIBS_INIT "-lpthread")
-  set(CMAKE_HAVE_THREADS_LIBRARY 1)
-  set(CMAKE_USE_WIN32_THREADS_INIT 0)
-  set(CMAKE_USE_PTHREADS_INIT 1)
-  set(THREADS_PREFER_PTHREAD_FLAG ON)
-  # Set the SDK path set(CMAKE_OSX_SYSROOT
-  # /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
-  # find_library(METAL_LIBRARY Metal) find_library(FOUNDATION_LIBRARY
-  # Foundation) if(METAL_LIBRARY AND FOUNDATION_LIBRARY) set(METAL_FOUND TRUE)
-  # target_compile_definitions(${PROJECT_NAME} PRIVATE USE_METAL) message(STATUS
-  # "Apple Metal found. Building with Metal support.") else() message(WARNING
-  # "Neither CUDA nor Apple Metal found. Building without GPU acceleration.")
-  # endif()
+  # Check for Apple Metal (only if CUDA is not found)
+  if(NOT CUDA_FOUND AND APPLE)
+    set(CMAKE_THREAD_LIBS_INIT "-lpthread")
+    set(CMAKE_HAVE_THREADS_LIBRARY 1)
+    set(CMAKE_USE_WIN32_THREADS_INIT 0)
+    set(CMAKE_USE_PTHREADS_INIT 1)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    # Set the SDK path set(CMAKE_OSX_SYSROOT
+    # /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
+    # find_library(METAL_LIBRARY Metal) find_library(FOUNDATION_LIBRARY
+    # Foundation) if(METAL_LIBRARY AND FOUNDATION_LIBRARY) set(METAL_FOUND TRUE)
+    # target_compile_definitions(${PROJECT_NAME} PRIVATE USE_METAL)
+    # message(STATUS "Apple Metal found. Building with Metal support.") else()
+    # message(WARNING "Neither CUDA nor Apple Metal found. Building without GPU
+    # acceleration.")
+  endif()
 endif()
 
 # Library target
