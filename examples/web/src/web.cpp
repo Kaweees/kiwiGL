@@ -39,8 +39,6 @@ int main(int argc, char** argv) {
   // Initialization of display
   kiwigl::Display* display = new kiwigl::Display("KiwiGL WebAssembly Demo");
 
-  // kiwigl::Display* display = static_cast<kiwigl::Display*>(arg);
-
   // Load the Stanford bunny mesh
   display->loadMesh("./assets/cube.mesh");
 

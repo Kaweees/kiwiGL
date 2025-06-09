@@ -2,6 +2,7 @@
 
 #ifndef BENCHMARK_MODE
 #include <SDL2/SDL.h>
+
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,15 +61,17 @@ class Display {
 #ifndef BENCHMARK_MODE
     // Constructor to initialize memory
     Display(const std::string& title, bool fullscreen = false, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
-            const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
+            const Vector3D& cameraRotation = Vector3D(0, 0, 0),
+            const Vector3D& cameraRotationSpeed = Vector3D(0, 0, 0)) {
 #else
     Display(uint32_t numOfFrames, const Vector3D& cameraPosition = Vector3D(0, 0, -5),
-            const Vector3D& cameraRotation = Vector3D(0, 0, 0)) {
+            const Vector3D& cameraRotation = Vector3D(0, 0, 0),
+            const Vector3D& cameraRotationSpeed = Vector3D(0, 0, 0)) {
 #endif
       // Initialize the camera
       camera = cameraPosition;
       rotation = cameraRotation;
-      rotationSpeed = Vector3D(0, 0, 0);
+      rotationSpeed = cameraRotationSpeed;
 #ifndef BENCHMARK_MODE
       fullScreen = fullscreen;
       keyPressed = SDLK_UNKNOWN;
@@ -103,20 +106,34 @@ class Display {
 #endif
 
 #ifndef BENCHMARK_MODE
+#ifdef __EMSCRIPTEN__
+      // Initialize the SDL window for Emscripten
+      window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
+                                frameBuffer->getHeight(), SDL_WINDOW_SHOWN);
+#else
       // Initialize the SDL window
       window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
                                 frameBuffer->getHeight(), fullScreen ? SDL_WINDOW_BORDERLESS : SDL_WINDOW_SHOWN);
+#endif
       if (window == nullptr) {
         fprintf(stderr, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
 
       // Initialize the SDL renderer
-      renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+      renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
       if (renderer == nullptr) {
         fprintf(stderr, "Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
+
+#ifndef __EMSCRIPTEN__
+      // Set the logical size of the renderer
+      if (!SDL_RenderSetLogicalSize(renderer, frameBuffer->getWidth(), frameBuffer->getHeight())) {
+        fprintf(stderr, "Failed to set logical size! SDL_Error: %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+      }
+#endif
 
       // Initialize the SDL texture
       texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
@@ -125,9 +142,6 @@ class Display {
         fprintf(stderr, "Texture could not be created! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
-
-      // Set the blend mode
-      SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 #endif
     }
 
@@ -174,7 +188,8 @@ class Display {
     // Method to update the display
     void update() {
 #ifndef BENCHMARK_MODE
-      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
+      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
+        ;
       prevTime = SDL_GetTicks();
 #endif
 
