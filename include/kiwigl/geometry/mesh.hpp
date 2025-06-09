@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -32,25 +33,85 @@ class Mesh {
       std::ifstream file(filename, std::ios::binary);
       if (file.is_open()) {
         std::string line;
-        while (std::getline(file, line) && !file.eof()) {
-          if (line.find("v ") != std::string::npos) {
-            // Parse the vertex
-            Vector3D vertex;
-            if (sscanf(line.c_str(), "v %lf %lf %lf", &vertex.x, &vertex.y, &vertex.z) == 3) { addVertex(vertex); }
-          } else if (line.find("vt ") != std::string::npos) {
+        while (std::getline(file, line)) {
+          if (line.rfind("vt ", 0) == 0) {
             // Parse the texture coordinate
             Texture2D texture;
             if (sscanf(line.c_str(), "vt %lf %lf", &texture.u, &texture.v) == 2) { addTexture(texture); }
-          } else if (line.find("f ") != std::string::npos) {
-            // Parse the face
-            int v1, v2, v3, t1, t2, t3, n1, n2, n3;
-            if (sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &t1, &n1, &v2, &t2, &n2, &v3, &t3, &n3) ==
-                9) {
-              addFace(v1, v2, v3, textures[t1 - 1], textures[t2 - 1], textures[t3 - 1], WHITE);
+          } else if (line.rfind("v ", 0) == 0) {
+            // Parse the vertex
+            Vector3D vertex;
+            if (sscanf(line.c_str(), "v %lf %lf %lf", &vertex.x, &vertex.y, &vertex.z) == 3) { addVertex(vertex); }
+          } else if (line.rfind("f ", 0) == 0) {
+            std::stringstream ss(line.substr(2));
+            std::string token;
+            std::vector<int> v_indices, t_indices, n_indices;
+
+            while (ss >> token) {
+              int v = 0, t = 0, n = 0;
+              if (sscanf(token.c_str(), "%d/%d/%d", &v, &t, &n) == 3) {
+                v_indices.push_back(v);
+                t_indices.push_back(t);
+                n_indices.push_back(n);
+              } else if (sscanf(token.c_str(), "%d//%d", &v, &n) == 2) {
+                v_indices.push_back(v);
+                n_indices.push_back(n);
+              } else if (sscanf(token.c_str(), "%d/%d", &v, &t) == 2) {
+                v_indices.push_back(v);
+                t_indices.push_back(t);
+              } else if (sscanf(token.c_str(), "%d", &v) == 1) {
+                v_indices.push_back(v);
+              }
+            }
+
+            // Triangulate polygon faces
+            if (v_indices.size() >= 3) {
+              for (size_t i = 1; i < v_indices.size() - 1; ++i) {
+                Texture2D tex[3];
+                if (t_indices.size() == v_indices.size()) {
+                  auto get_abs_idx = [](int idx, size_t s) -> size_t {
+                    if (idx > 0) return idx - 1;
+                    if (idx < 0) return s + idx;
+                    return (size_t)-1; // Invalid index
+                  };
+
+                  size_t t0 = get_abs_idx(t_indices[0], textures.size());
+                  size_t ti = get_abs_idx(t_indices[i], textures.size());
+                  size_t ti1 = get_abs_idx(t_indices[i + 1], textures.size());
+
+                  if (t0 < textures.size() && ti < textures.size() && ti1 < textures.size()) {
+                    tex[0] = textures[t0];
+                    tex[1] = textures[ti];
+                    tex[2] = textures[ti1];
+                  }
+                }
+
+                addFace(v_indices[0], v_indices[i], v_indices[i + 1], tex[0], tex[1], tex[2], WHITE);
+              }
             }
           }
         }
         file.close();
+
+        // Center the mesh to its origin
+        if (!vertices.empty()) {
+          Vector3D center(0, 0, 0);
+          for (const auto& v : vertices) {
+            center.x += v.x;
+            center.y += v.y;
+            center.z += v.z;
+          }
+          center.x /= vertices.size();
+          center.y /= vertices.size();
+          center.z /= vertices.size();
+
+          for (auto& v : vertices) {
+            v.x -= center.x;
+            v.y -= center.y;
+            v.z -= center.z;
+          }
+        }
+
         return true;
       } else {
         std::cerr << "Failed to open mesh file: " << filename << std::endl;

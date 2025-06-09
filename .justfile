@@ -16,7 +16,7 @@ default:
   @just --list
 
 # Run a package
-run *package='f22':
+run *package='bunny':
   @./target/release/{{package}}
 
 # Build the project
@@ -32,7 +32,7 @@ web *build_type='Release':
   @mkdir -p build
   @if [ -n "${EM_CACHE-}" ]; then mkdir -p "$EM_CACHE" && mkdir -p "$EM_CACHE/tmp"; fi
   @echo "Configuring the build system..."
-  @cd build && emcmake cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}} -DBUILD_WASM=1
+  @cd build && emcmake cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}}
   @echo "Building the project..."
   @cd build && cmake --build . -j$(nproc)
   @mkdir -p public/assets/

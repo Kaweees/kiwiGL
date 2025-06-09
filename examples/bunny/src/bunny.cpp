@@ -4,27 +4,14 @@
 #include <iostream>
 #include <kiwigl/kiwigl.hpp>
 
-#ifdef __METAL__
-#include <cassert>
-
-#define NS_PRIVATE_IMPLEMENTATION
-#define MTL_PRIVATE_IMPLEMENTATION
-#define MTK_PRIVATE_IMPLEMENTATION
-#define CA_PRIVATE_IMPLEMENTATION
-#include <simd/simd.h>
-
-#include <AppKit/AppKit.hpp>
-#include <Metal/Metal.hpp>
-#include <MetalKit/MetalKit.hpp>
-#endif
-
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
 int main(int argc, char** argv) {
   // Initialization of display
 #ifndef BENCHMARK_MODE
-  kiwigl::Display display("KiwiGL Stanford Bunny Demo", kiwigl::Vector3D(0, 0, -0.25), kiwigl::Vector3D(M_PI, M_PI, 0));
+  kiwigl::Display display("KiwiGL Stanford Bunny Demo", false, kiwigl::Vector3D(0, 0, -0.25),
+                          kiwigl::Vector3D(M_PI, M_PI, 0));
 #else
   kiwigl::Display display(10000);
 #endif

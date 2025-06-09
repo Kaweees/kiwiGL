@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <iostream>
+#include <cmath>
 #include <kiwigl/kiwigl.hpp>
 
 #ifdef __EMSCRIPTEN__
@@ -37,10 +38,12 @@ void runMainLoop(void* display) {
 //------------------------------------------------------------------------------------
 int main(int argc, char** argv) {
   // Initialization of display
-  kiwigl::Display* display = new kiwigl::Display("KiwiGL WebAssembly Demo");
+  kiwigl::Display* display =
+      new kiwigl::Display("KiwiGL WebAssembly Demo", false, kiwigl::Vector3D(0, 0, -0.25),
+                          kiwigl::Vector3D(M_PI, M_PI, 0), kiwigl::Vector3D(0.005, 0.005, 0.005));
 
   // Load the Stanford bunny mesh
-  display->loadMesh("./assets/cube.mesh");
+  display->loadMesh("./assets/bunny.mesh");
 
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop_arg(runMainLoop, (void*)display, 0, true);

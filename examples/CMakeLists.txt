@@ -1,4 +1,4 @@
-if(BUILD_WASM)
+if(EMSCRIPTEN)
   add_subdirectory(web)
 else()
   add_subdirectory(bunny)

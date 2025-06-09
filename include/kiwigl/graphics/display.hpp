@@ -18,7 +18,7 @@
 #ifdef __CUDA__
 #include "display.cuh"
 #elif __METAL__
-#include "display.metal"
+#include "display.mm"
 #endif
 
 namespace kiwigl {
@@ -129,7 +129,7 @@ class Display {
 
 #ifndef __EMSCRIPTEN__
       // Set the logical size of the renderer
-      if (!SDL_RenderSetLogicalSize(renderer, frameBuffer->getWidth(), frameBuffer->getHeight())) {
+      if (SDL_RenderSetLogicalSize(renderer, frameBuffer->getWidth(), frameBuffer->getHeight()) < 0) {
         fprintf(stderr, "Failed to set logical size! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
@@ -188,8 +188,7 @@ class Display {
     // Method to update the display
     void update() {
 #ifndef BENCHMARK_MODE
-      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME))
-        ;
+      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
       prevTime = SDL_GetTicks();
 #endif
 

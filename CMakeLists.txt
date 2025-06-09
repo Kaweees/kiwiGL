@@ -28,10 +28,18 @@ target_include_directories(
 include(CheckLanguage)
 include(FetchContent)
 
-if(BUILD_WASM)
-  # Ensure we're using Emscripten compiler
-  if(NOT DEFINED EMSCRIPTEN)
-    message(FATAL_ERROR "BUILD_WASM requires using Emscripten CMake toolchain")
+if(EMSCRIPTEN)
+  if(APPLE)
+    # Tell CMake we are *not* building for macOS and strip any inherited flags.
+    set(CMAKE_OSX_ARCHITECTURES
+        ""
+        CACHE STRING "" FORCE)
+    set(CMAKE_OSX_SYSROOT
+        ""
+        CACHE PATH "" FORCE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET
+        ""
+        CACHE STRING "" FORCE)
   endif()
   add_compile_definitions("__EMSCRIPTEN__")
 
@@ -53,7 +61,7 @@ if(BUILD_WASM)
     "-sASSERTIONS=1")
 
   # Set output extension
-  set(CMAKE_EXECUTABLE_SUFFIX .js)
+  set(CMAKE_EXECUTABLE_SUFFIX ".js")
 else()
   # Metal Support (macOS/iOS)
   if(APPLE)
@@ -65,8 +73,10 @@ else()
       message(STATUS "Apple Metal found. Building with Metal support")
       enable_language(OBJCXX)
       set_target_properties(
-        ${PROJECT_NAME} PROPERTIES CMAKE_OBJCXX_STANDARD_REQUIRED ON
-                                   CMAKE_OBJCXX_STANDARD 20)
+        ${PROJECT_NAME}
+        PROPERTIES CMAKE_OBJCXX_STANDARD_REQUIRED ON
+                   CMAKE_OBJCXX_STANDARD 20
+                   MACOSX_BUNDLE ON)
       # Fetch Metal-cpp
       FetchContent_Declare(
         metal-cpp
@@ -137,7 +147,7 @@ if(BUILD_EXAMPLES)
 endif()
 
 # Tests
-if(NOT BUILD_WASM AND BUILD_TESTS)
+if(NOT EMSCRIPTEN AND BUILD_TESTS)
   # Fetch GoogleTest
   FetchContent_Declare(
     googletest
