@@ -82,7 +82,8 @@ else()
         metal-cpp
         GIT_REPOSITORY https://github.com/rizajin/metal-cpp.git
         GIT_TAG "main"
-        GIT_PROGRESS TRUE)
+        GIT_PROGRESS TRUE
+        GIT_SHALLOW TRUE)
       FetchContent_MakeAvailable(metal-cpp)
       target_link_libraries(
         ${PROJECT_NAME} INTERFACE "-framework Metal" "-framework Foundation"
@@ -130,7 +131,8 @@ else()
     SDL2
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
     GIT_TAG "release-2.32.8"
-    GIT_PROGRESS TRUE)
+    GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE)
   FetchContent_MakeAvailable(SDL2)
 
   # Add SDL2 include directories
@@ -153,7 +155,8 @@ if(NOT EMSCRIPTEN AND BUILD_TESTS)
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG "v1.15.2"
-    GIT_PROGRESS TRUE)
+    GIT_PROGRESS TRUE
+    GIT_SHALLOW TRUE)
   FetchContent_MakeAvailable(googletest)
   enable_testing()
   add_subdirectory(tests)
