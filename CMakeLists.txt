@@ -125,22 +125,22 @@ endif()
 if(BENCHMARK)
   target_compile_definitions(${PROJECT_NAME} PRIVATE BENCHMARK_MODE)
 else()
-  # Fetch SDL2
+  # Fetch SDL3
   include(FetchContent)
   FetchContent_Declare(
-    SDL2
+    SDL3
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG "release-2.32.8"
+    GIT_TAG "release-3.2.16"
     GIT_PROGRESS TRUE
     GIT_SHALLOW TRUE)
-  FetchContent_MakeAvailable(SDL2)
+  FetchContent_MakeAvailable(SDL3)
 
-  # Add SDL2 include directories
+  # Add SDL3 include directories
   target_include_directories(${PROJECT_NAME}
-                             INTERFACE ${SDL2_SOURCE_DIR}/include)
+                             INTERFACE ${SDL3_SOURCE_DIR}/include)
 
-  # Link SDL2 libraries
-  target_link_libraries(${PROJECT_NAME} INTERFACE SDL2::SDL2)
+  # Link SDL3 libraries
+  target_link_libraries(${PROJECT_NAME} INTERFACE SDL3::SDL3)
 endif()
 
 # Examples

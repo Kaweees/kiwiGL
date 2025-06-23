@@ -9,6 +9,8 @@ pkgs.mkShell {
     pkg-config # Package configuration
     emscripten # Emscripten for web assembly
     nodejs # Required for Emscripten
+    ninja # Ninja build system
+    git # Git for version control
   ];
 
   # Shell hook to set up environment

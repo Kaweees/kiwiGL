@@ -1,7 +1,11 @@
 #pragma once
 
 #ifndef BENCHMARK_MODE
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+
+#define SDL_QuitRequested()                                                                                            \
+  (SDL_PumpEvents(), (SDL_PeepEvents(NULL, 0, SDL_PEEKEVENT, SDL_EVENT_QUIT, SDL_EVENT_QUIT) > 0))
 
 #endif
 #include <stdio.h>
@@ -35,16 +39,16 @@ enum RenderMethod {
 // Represents a display
 class Display {
   private:
-    // Constants for display
-    SDL_DisplayMode displayMode;
 #ifndef BENCHMARK_MODE
+    // Constants for display
+    const SDL_DisplayMode* displayMode;
     bool fullScreen;
     SDL_Window* window;
     SDL_Texture* texture;
     SDL_Surface* surface;
     SDL_Renderer* renderer;
-    SDL_Keycode keyPressed;
-    uint32_t prevTime;
+    SDL_Keycode key;
+    uint64_t prevTime;
     RenderMethod renderMethod;
 #else
     uint32_t count;
@@ -74,16 +78,17 @@ class Display {
       rotationSpeed = cameraRotationSpeed;
 #ifndef BENCHMARK_MODE
       fullScreen = fullscreen;
-      keyPressed = SDLK_UNKNOWN;
+      key = SDLK_UNKNOWN;
       prevTime = SDL_GetTicks();
       // Initialize SDL with only the required subsystems
-      if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0) {
+      if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
         fprintf(stderr, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
 
       // Query SDL for the display mode
-      if (SDL_GetCurrentDisplayMode(0, &displayMode) != 0) {
+      displayMode = SDL_GetCurrentDisplayMode(SDL_GetPrimaryDisplay());
+      if (displayMode == nullptr) {
         fprintf(stderr, "SDL_GetCurrentDisplayMode failed: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
@@ -93,7 +98,7 @@ class Display {
 #endif
 
       // Initialize the frame buffer
-      frameBuffer = std::make_unique<FrameBuffer>(displayMode.w, displayMode.h);
+      frameBuffer = std::make_unique<FrameBuffer>(displayMode->w, displayMode->h);
 
 #ifdef __CUDA__
       // Initialize the CUDA device pointers
@@ -108,12 +113,11 @@ class Display {
 #ifndef BENCHMARK_MODE
 #ifdef __EMSCRIPTEN__
       // Initialize the SDL window for Emscripten
-      window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
-                                frameBuffer->getHeight(), SDL_WINDOW_SHOWN);
+      window = SDL_CreateWindow(title.c_str(), frameBuffer->getWidth(), frameBuffer->getHeight(), 0);
 #else
       // Initialize the SDL window
-      window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, frameBuffer->getWidth(),
-                                frameBuffer->getHeight(), fullScreen ? SDL_WINDOW_BORDERLESS : SDL_WINDOW_SHOWN);
+      window = SDL_CreateWindow(title.c_str(), frameBuffer->getWidth(), frameBuffer->getHeight(),
+                                fullScreen ? SDL_WINDOW_BORDERLESS : 0);
 #endif
       if (window == nullptr) {
         fprintf(stderr, "Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -121,7 +125,7 @@ class Display {
       }
 
       // Initialize the SDL renderer
-      renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+      renderer = SDL_CreateRenderer(window, nullptr);
       if (renderer == nullptr) {
         fprintf(stderr, "Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
@@ -129,7 +133,8 @@ class Display {
 
 #ifndef __EMSCRIPTEN__
       // Set the logical size of the renderer
-      if (SDL_RenderSetLogicalSize(renderer, frameBuffer->getWidth(), frameBuffer->getHeight()) < 0) {
+      if (!SDL_SetRenderLogicalPresentation(renderer, frameBuffer->getWidth(), frameBuffer->getHeight(),
+                                            SDL_LOGICAL_PRESENTATION_LETTERBOX)) {
         fprintf(stderr, "Failed to set logical size! SDL_Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
       }
@@ -174,12 +179,12 @@ class Display {
       SDL_Event event;
       while (SDL_PollEvent(&event)) {
         switch (event.type) {
-          case SDL_KEYDOWN:
-            keyPressed = event.key.keysym.sym;
+          case SDL_EVENT_KEY_DOWN:
+            key = event.key.key;
             // Reset rotation speeds when space is pressed
-            if (keyPressed == SDLK_SPACE) { rotationSpeed = Vector3D(0, 0, 0); }
+            if (key == SDLK_SPACE) { rotationSpeed = Vector3D(0, 0, 0); }
             break;
-          default: keyPressed = SDLK_UNKNOWN;
+          default: key = SDLK_UNKNOWN;
         }
       }
 #endif
@@ -188,7 +193,7 @@ class Display {
     // Method to update the display
     void update() {
 #ifndef BENCHMARK_MODE
-      while (!SDL_TICKS_PASSED(SDL_GetTicks(), prevTime + FRAME_TIME));
+      while (SDL_GetTicks() < prevTime + FRAME_TIME);
       prevTime = SDL_GetTicks();
 #endif
 
@@ -223,7 +228,7 @@ class Display {
 #endif
 #ifndef BENCHMARK_MODE
       // Update rotation
-      switch (keyPressed) {
+      switch (key) {
         case SDLK_UP: rotationSpeed.x += 0.01; break;
         case SDLK_DOWN: rotationSpeed.x -= 0.01; break;
         case SDLK_LEFT: rotationSpeed.y += 0.01; break;
@@ -256,7 +261,7 @@ class Display {
       SDL_UpdateTexture(texture, nullptr, frameBuffer->getData().data(), frameBuffer->getWidth() * sizeof(uint32_t));
 
       // Copy the texture to the renderer
-      SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+      SDL_RenderTexture(renderer, texture, nullptr, nullptr);
 
       // Present the renderer
       SDL_RenderPresent(renderer);
