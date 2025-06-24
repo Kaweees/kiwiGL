@@ -15,6 +15,9 @@ alias f := format
 default:
   @just --list
 
+# Get the number of cores
+CORES := if os() == "macos" { `sysctl -n hw.ncpu` } else if os() == "linux" { `nproc` } else { "1" }
+
 # Run a package
 run *package='bunny':
   @./target/release/{{package}}
@@ -25,7 +28,7 @@ build *build_type='Release':
   @echo "Configuring the build system..."
   @cd build && cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}}
   @echo "Building the project..."
-  @cd build && cmake --build . -j$(nproc)
+  @cd build && cmake --build . -j{{CORES}}
 
 # Build the project for the web
 web *build_type='Release':
@@ -34,7 +37,7 @@ web *build_type='Release':
   @echo "Configuring the build system..."
   @cd build && emcmake cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}}
   @echo "Building the project..."
-  @cd build && cmake --build . -j$(nproc)
+  @cd build && cmake --build . -j{{CORES}}
   @mkdir -p public/assets/
   @# Find and copy WASM, JS and data files to the public directory
   @find target/release/web -name "*.wasm" -exec cp {} ./public/ \;

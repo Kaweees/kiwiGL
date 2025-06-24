@@ -85,6 +85,10 @@ else()
         GIT_PROGRESS TRUE
         GIT_SHALLOW TRUE)
       FetchContent_MakeAvailable(metal-cpp)
+
+      # Add metal-cpp include directories
+      target_include_directories(${PROJECT_NAME} INTERFACE ${metal-cpp_SOURCE_DIR})
+
       target_link_libraries(
         ${PROJECT_NAME} INTERFACE "-framework Metal" "-framework Foundation"
                                   "-framework QuartzCore" "-framework MetalKit")
@@ -140,7 +144,11 @@ else()
                              INTERFACE ${SDL3_SOURCE_DIR}/include)
 
   # Link SDL3 libraries
-  target_link_libraries(${PROJECT_NAME} INTERFACE SDL3::SDL3)
+  if(EMSCRIPTEN)
+    target_link_libraries(${PROJECT_NAME} INTERFACE SDL3::SDL3-static)
+  else()
+    target_link_libraries(${PROJECT_NAME} INTERFACE SDL3::SDL3)
+  endif()
 endif()
 
 # Examples

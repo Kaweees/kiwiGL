@@ -22,7 +22,10 @@
 #ifdef __CUDA__
 #include "display.cuh"
 #elif __METAL__
-#include "display.mm"
+#define NS_PRIVATE_IMPLEMENTATION
+#define MTL_PRIVATE_IMPLEMENTATION
+#include "Metal/Metal.hpp"
+
 #endif
 
 namespace kiwigl {
@@ -107,7 +110,7 @@ class Display {
       Triangle* d_projectedTriangles = nullptr;
       InitalizeCuda();
 #elif __METAL__
-      InitalizeMetal();
+      // InitalizeMetal();
 #endif
 
 #ifndef BENCHMARK_MODE
@@ -200,7 +203,7 @@ class Display {
 #ifdef __CUDA__
       LaunchCuda(frameBuffer->getWidth(), frameBuffer->getHeight());
 #elif __METAL__
-      LaunchMetal();
+      // LaunchMetal();
 #else
   for (int i = 0; i < mesh.faces.size(); i++) {
     // Transform the vertices of the face
@@ -300,14 +303,14 @@ class Display {
     // Method to launch CUDA
     virtual void LaunchCuda(int width, int height);
 #elif __METAL__
-    // Method to initialize Metal
-    virtual void InitalizeMetal();
+    // // Method to initialize Metal
+    // virtual void InitalizeMetal();
 
-    // Method to free Metal
-    virtual void FreeMetal();
+    // // Method to free Metal
+    // virtual void FreeMetal();
 
-    // Method to launch Metal
-    virtual void LaunchMetal();
+    // // Method to launch Metal
+    // virtual void LaunchMetal();
 #endif
 
     // Method to load a mesh
