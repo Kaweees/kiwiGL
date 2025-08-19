@@ -1,10 +1,13 @@
-{pkgs ? import <nixpkgs> {}}:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 pkgs.mkShell {
   buildInputs = with pkgs; [
+    clang # C++ compiler
+    cppcheck # C++ linter
     cmake # CMake build system
     cmake-format # CMake format tool
-    clang # C++ compiler
-    cppcheck # C++ static analysis tool
+    nixfmt # Nix formatter
     just # Just runner
     pkg-config # Package configuration
     emscripten # Emscripten for web assembly

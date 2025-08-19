@@ -26,7 +26,7 @@ run *package='bunny':
 build *build_type='Release':
   @mkdir -p build
   @echo "Configuring the build system..."
-  @cd build && cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}}
+  @cd build && cmake -S .. -B . -DCMAKE_BUILD_TYPE={{build_type}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
   @echo "Building the project..."
   @cd build && cmake --build . -j{{CORES}}
 
@@ -53,10 +53,9 @@ clean:
   @rm -rf target
   @if [ -n "${EM_CACHE-}" ]; then rm -rf "$EM_CACHE"; fi
 
-# Run code quality tools
 check:
   @echo "Running code quality tools..."
-  @cppcheck --enable=all --suppress=missingInclude --suppress=unusedFunction --error-exitcode=1 include/kiwigl
+  @cppcheck --error-exitcode=1 --project=build/compile_commands.json -i build/_deps/
 
 # Run code quality tools
 test:
@@ -68,7 +67,8 @@ format:
   @echo "Formatting..."
   @chmod +x ./scripts/format.sh
   @./scripts/format.sh format
-  @cmake-format -i CMakeLists.txt
+  @cmake-format -i $(find . -name "CMakeLists.txt")
+  @find . -name "*.nix" -type f -exec nixfmt {} \;
 
 # Generate documentation
 docs:

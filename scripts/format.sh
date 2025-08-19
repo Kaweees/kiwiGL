@@ -10,7 +10,7 @@
 
 format() {
   # Find all C/C++ files
-  files=$(find include examples tests -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" -o -name "*.cc" -o -name "*.cxx" -o -name "*.cu")
+  files=$(find . -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" -o -name "*.cc" -o -name "*.hh" -o -name "*.cxx" -o -name "*.hxx" -o -name "*.cu" -o -name "*.cuh")
 
   if [ -z "$files" ]; then
     echo "No C/C++ files found"
@@ -34,7 +34,9 @@ format() {
     return 1
   fi
 }
+
 # Main script logic
+set -e # Exit on error
 case "$1" in
   format)
     format

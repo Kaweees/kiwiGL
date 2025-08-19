@@ -87,7 +87,8 @@ else()
       FetchContent_MakeAvailable(metal-cpp)
 
       # Add metal-cpp include directories
-      target_include_directories(${PROJECT_NAME} INTERFACE ${metal-cpp_SOURCE_DIR})
+      target_include_directories(${PROJECT_NAME}
+                                 INTERFACE ${metal-cpp_SOURCE_DIR})
 
       target_link_libraries(
         ${PROJECT_NAME} INTERFACE "-framework Metal" "-framework Foundation"
@@ -130,7 +131,6 @@ if(BENCHMARK)
   target_compile_definitions(${PROJECT_NAME} PRIVATE BENCHMARK_MODE)
 else()
   # Fetch SDL3
-  include(FetchContent)
   FetchContent_Declare(
     SDL3
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git

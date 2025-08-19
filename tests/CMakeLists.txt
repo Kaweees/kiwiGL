@@ -1,18 +1,14 @@
 enable_testing()
 
-set(
-  TESTS
-  test_library
-)
+set(TESTS test_library)
 
-foreach (name IN LISTS TESTS)
+foreach(name IN LISTS TESTS)
   message(STATUS "Building test: ${name}")
   add_executable("${name}" "${name}.cpp")
-  target_link_libraries(
+  target_link_libraries("${name}" PRIVATE ${PROJECT_NAME} GTest::gtest_main)
+  set_target_properties(
     "${name}"
-    PRIVATE
-    ${PROJECT_NAME}
-    GTest::gtest_main
-  )
-  set_target_properties("${name}" PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/target/release/tests/" OUTPUT_NAME "${name}")
-endforeach ()
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY
+               "${PROJECT_SOURCE_DIR}/target/release/tests/" OUTPUT_NAME
+                                                             "${name}")
+endforeach()

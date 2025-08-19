@@ -8,7 +8,7 @@ target_include_directories(${EXECUTABLE_NAME} PUBLIC ${PROJECT_INCLUDES})
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${PROJECT_NAME})
 
 # Setting our output directory
-set_target_properties(${EXECUTABLE_NAME} PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/target/release/"
-  OUTPUT_NAME ${EXECUTABLE_NAME}
-)
+set_target_properties(
+  ${EXECUTABLE_NAME}
+  PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/target/release/"
+             OUTPUT_NAME ${EXECUTABLE_NAME})
